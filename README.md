@@ -1,8 +1,19 @@
-# React + Vite
+# Expense Tracker
+A web application designed for the phone, aiming to make tracking expenses easy and compatible with Google spreadsheets.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## What does it do?
+- Retrieves formatted transaction data from personal Google Sheets to be displayed comfortably on phone screens.
+- Allows user to enter new transactions while on the go with the clicks of a few buttons.
+- Syncs data to Google Sheets real time for accessibility.
+- Filters transaction history based on selected time periods.
 
-Currently, two official plugins are available:
+## Config
+- **Python**: 3.11.5
+- **ReactJS**: 18.2.0
+- **Flask**: 3.0.0
+- **Pandas**: 2.1.3
+  
+*See requirements.txt for other pip dependencies*
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## History
+See [Old Expense Tracker Repo](https://github.com/Kevin-Wei-KW/ExpenseTracker) for detailed development commit history.
