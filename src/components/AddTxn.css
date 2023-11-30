@@ -1,0 +1,74 @@
+.AddTxn {
+    background-color: black;
+    color: white;
+    height: 100vh;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.line-input {
+    height: 7%;
+    width: 80%;
+    border-radius: 10px;
+    padding: 10px;
+    
+    font-size: 24px;
+    font-weight: bold;
+    box-sizing :border-box;
+
+    border-width: 2px;
+    border-style: inset;
+    border-color: rgba(255, 255, 255, 0.3);
+
+    background-color: #1A1A1A;
+}
+
+.line-input option {
+    width: 80px;
+}
+
+.box-input {
+    height: 12%;
+    width: 80%;
+    border-radius: 10px;
+    padding: 10px;
+
+    font-size: 24px;
+    font-weight: bold;
+    box-sizing: border-box;
+
+    border-width: 2px;
+    border-style: inset;
+    border-color: rgba(255, 255, 255, 0.3);
+
+    background-color: #1A1A1A;
+}
+
+.preview {
+    width: 75% !important;
+}
+
+.confirm-cancel {
+    width: 80%;
+    height: 7%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.confirm-cancel * {
+    height: 100%;
+    width: 45%;
+}
+
+.cancel {
+    background-color: #1A1A1A;
+}
+
+.confirm {
+    background-color: #36512B;
+}
