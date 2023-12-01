@@ -47,13 +47,16 @@ test_txn: txn_dict_format = {
 # Setup
 #
 
+TARGET_SHEET = "Expenses"
+TARGET_WORKSHEET = "transactions"
+
 
 def get_dataframe() -> pd.DataFrame:
     """
     Retrieve dataframe from spreadsheet
     :return: pandas dataframe object
     """
-    sheet = client.open('Expenses').worksheet("transactions")
+    sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
 
     df = pd.DataFrame(sheet.get_all_values())
     df.columns = df.iloc[0]
@@ -86,8 +89,8 @@ def dataframe_to_json_list(df: pd.DataFrame) -> list[txn_dict_format]:
             "date": row["Date"],
             "txn": row["Transaction"],
             "desc": row["Description"],
-            "dr": row["Dr"],
-            "cr": row["Cr"],
+            "dr": row["Dr"].replace(",", ""),
+            "cr": row["Cr"].replace(",", ""),
         }
 
         dict_list.insert(0, new_dict)
@@ -100,7 +103,7 @@ def dataframe_to_json_list(df: pd.DataFrame) -> list[txn_dict_format]:
 
 def create_row(data: txn_dict_format) -> list:
     """
-    create new row
+    create new row (not dependent on column headers)
     :param data: data to be placed into the row, dict typing defined above
     :return: new row as a list
     """
@@ -115,7 +118,7 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame) -> bool:
     :param df: the dataframe
     :return: nothing
     """
-    sheet = client.open('ExpenseTracker Test').worksheet("Sheet2")
+    sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
     # insert new row
     df.loc[len(df)+1] = row
     set_with_dataframe(sheet, df)
@@ -149,6 +152,8 @@ def get_column_sum(df: pd.DataFrame, need_cr: bool = True, txn_type: str = "", c
     for row_idx, row in df.iterrows():
         date = datetime.datetime.strptime(row[header_name["date"]], "%Y-%m-%d")
         cur_header = row[header_name["txn"]]
+        value = row[header].replace(",", "")
+
         if date.year != year:
             continue
 
@@ -158,9 +163,8 @@ def get_column_sum(df: pd.DataFrame, need_cr: bool = True, txn_type: str = "", c
         if txn_type != "" and cur_header != txn_type:
             continue
 
-        if is_float(row[header]):
-            total += float(row[header])
-
+        if is_float(value):
+            total += float(value)
     return total
 
 

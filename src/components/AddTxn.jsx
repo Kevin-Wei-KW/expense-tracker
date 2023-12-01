@@ -30,8 +30,8 @@ export default function AddTxn(props) {
             "date": date,
             "txn": type,
             "desc": detail? detail: "",
-            "dr": 0,
-            "cr": amount? Number(amount):0,
+            "dr": amount && type === 'earning'? Number(amount):0,
+            "cr": amount && type !== 'earning'? Number(amount):0,
         }
 
         await props.pushTxns(data)
