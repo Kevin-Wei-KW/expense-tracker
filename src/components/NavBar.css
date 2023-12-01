@@ -23,14 +23,10 @@
     justify-content: space-around;
     align-items: center;
 }
-.nav-button:hover{
-    background-color: #4D4D4D;
-    transition-duration: 0.5s;
-    cursor: pointer;
-}
+
 
 .selected {
     background-color: #4D4D4D;
 
-    transition: 0.2s;
+    transition: 0.5s;
 }
