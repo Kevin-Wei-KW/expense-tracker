@@ -30,8 +30,8 @@ export default function AddTxn(props) {
             "date": date,
             "txn": type,
             "desc": detail? detail: "",
-            "dr": amount && type === 'earning'? Number(amount):0,
-            "cr": amount && type !== 'earning'? Number(amount):0,
+            "dr": amount && type === 'Earning'? Number(amount):0,
+            "cr": amount && type !== 'Earning'? Number(amount):0,
         }
 
         await props.pushTxns(data)
@@ -61,7 +61,7 @@ export default function AddTxn(props) {
                 {/* <Select class="line-input" options={typeOptions} /> */}
                 <input className="line-input" placeholder="Amount:" type="number" max="100000" name="amountId" value={amount} onChange={(e) => setAmount(e.target.value)}/>
 
-                <TxnBox className="preview" type={type} date={date} details={detail} value={-amount}></TxnBox>
+                <TxnBox className="preview" type={type} date={date} details={detail} value={type=='Earning'? amount:-amount}></TxnBox>
 
                 <div className="confirm-cancel">
                     <button className="cancel" type="button" onClick={props.setPage}>Cancel</button>
