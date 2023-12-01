@@ -50,7 +50,7 @@
 }
 
 .details {
-    width: 50%;
+    width: 45%;
     margin: 1rem;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -62,10 +62,10 @@
 }
 
 .value {
-    width: 50%;
+    width: 55%;
 
     margin: auto;
-    font-size: 1.6rem;
+    font-size: 1.2rem;
     display: flex;
     flex-direction:row;
     justify-content: end;
