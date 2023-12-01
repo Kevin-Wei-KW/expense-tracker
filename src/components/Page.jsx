@@ -10,7 +10,7 @@ import AddTxn from "./AddTxn.jsx"
 export default function Page(props) {
     const [pageSelector, setPageSelector] = useState("Home");
 
-    function NewPage() {
+    function showPageContent() {
         window.scrollTo(0, 0);
         if (pageSelector === "AddTxn") {
             return <AddTxn setPage={()=>setPageSelector("Home")} pushTxns={props.pushTxns}/>;
@@ -21,11 +21,22 @@ export default function Page(props) {
         }
     }
 
+    function showAddTxnBtn() {
+        if (pageSelector != "AddTxn") {
+            return <AddTxnBtn setPage={()=>setPageSelector("AddTxn")}/>
+        }
+    }
+    function showNavBar() {
+        if (pageSelector != "AddTxn") {
+            return <NavBar page={pageSelector} setPage={setPageSelector} getTxns={props.getTxns} getStats={props.getStats}/>
+        }
+    }
+
     return(
         <div className="Page">
-            {NewPage()}
-            {props.page != "AddTxn" && <AddTxnBtn setPage={()=>setPageSelector("AddTxn")}/>}
-            {props.page != "AddTxn" && <NavBar page={pageSelector} setPage={setPageSelector} getTxns={props.getTxns} getStats={props.getStats}/>}
+            {showPageContent()}
+            {showAddTxnBtn()}
+            {showNavBar()}
         </div>
     )
 }
