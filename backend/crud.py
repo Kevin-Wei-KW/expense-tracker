@@ -53,7 +53,7 @@ def get_dataframe() -> pd.DataFrame:
     Retrieve dataframe from spreadsheet
     :return: pandas dataframe object
     """
-    sheet = client.open('ExpenseTracker Test').worksheet("Sheet2")
+    sheet = client.open('Expenses').worksheet("transactions")
 
     df = pd.DataFrame(sheet.get_all_values())
     df.columns = df.iloc[0]
