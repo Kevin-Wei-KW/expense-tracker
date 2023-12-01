@@ -3,8 +3,6 @@ import React, {useState} from "react";
 import "./AddTxn.css";
 import TxnBox from "./containers/TxnBox";
 
-import Select from 'react-select'
-
 
 
 export default function AddTxn(props) {
@@ -61,7 +59,7 @@ export default function AddTxn(props) {
                 <textarea className="box-input" placeholder="Details:" type="text" name="detailId" value={detail} onChange={(e) => setDetail(e.target.value)}/>
                 {/* <DropdownList data={typeOptions} dataKey="id" textField="name" defaultValue={0}/> */}
                 {/* <Select class="line-input" options={typeOptions} /> */}
-                <input className="line-input" placeholder="Amount:" max="100000" name="amountId" value={amount} onChange={(e) => setAmount(e.target.value)}/>
+                <input className="line-input" placeholder="Amount:" type="number" max="100000" name="amountId" value={amount} onChange={(e) => setAmount(e.target.value)}/>
 
                 <TxnBox className="preview" type={type} date={date} details={detail} value={-amount}></TxnBox>
 
