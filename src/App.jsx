@@ -18,7 +18,7 @@ export default function App() {
     setLoadingTxns(true)
     axios({
       method: "GET",
-      url:"http://localhost:5000/txns",
+      url:"https://expense-tracker-85pc.onrender.com/txns",
     })
     .then((response) => {
       const res = response.data
@@ -36,7 +36,7 @@ export default function App() {
 
   function pushTxns(data) {
     axios.post(
-      "http://localhost:5000/txns", data
+      "https://expense-tracker-85pc.onrender.com/txns", data
     )
     .then(() => {
       getTxns()
@@ -54,7 +54,7 @@ export default function App() {
   function getStats(data = {"year": 2023, "month": 0}) {
     setLoadingStats(true)
     axios.get(
-      "http://localhost:5000/stats", { params: {
+      "https://expense-tracker-85pc.onrender.com/stats", { params: {
         year: data["year"],
         month: data["month"],
       }}
