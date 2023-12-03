@@ -48,7 +48,7 @@ test_txn: txn_dict_format = {
 #
 
 TARGET_SHEET = "Expenses"
-TARGET_WORKSHEET = "transactions"
+TARGET_WORKSHEET = "test"
 
 
 def get_dataframe() -> pd.DataFrame:
