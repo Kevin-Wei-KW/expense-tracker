@@ -4,6 +4,7 @@ A web application designed for the phone, aiming to make tracking expenses easy 
 For demo: [https://expense-tracker-api-demo.onrender.com](https://expense-tracker-web-demo.onrender.com/)
 
 *Added transactions will be saved in database.
+
 *Initial loading may take a minute for Demo server to boot up.
 
 ## What does it do?
