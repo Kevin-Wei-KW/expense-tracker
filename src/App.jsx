@@ -14,7 +14,7 @@ export default function App() {
   const [statsDict, setStatsDict] = useState({})
   const [loadingStats, setLoadingStats] = useState(false)
 
-  const API_URL = "https://expense-tracker-85pc.onrender.com"
+  const API_URL = "https://expense-tracker-api-demo.onrender.com"
   // const API_URL = "http://localhost:5000"
 
   function getTxns() {
