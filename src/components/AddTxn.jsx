@@ -49,7 +49,7 @@ export default function AddTxn(props) {
 
                 <select className="line-input" value={type} onChange={(e) => setType(e.target.value)}>
                     <option value="Food">Food</option>
-                    <option value="Rec">Rec</option>
+                    <option value="Rec">Recreational</option>
                     <option value="School">School</option>
                     <option value="Misc">Misc</option>
                     <option value="Grocery">Grocery</option>
