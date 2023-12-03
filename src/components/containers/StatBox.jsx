@@ -28,7 +28,11 @@ export default function StatBox(props) {
         if(value === undefined || value === "") {
             return placeholder;
         } else {
-            return value;
+            if(value === "Rec") {
+                return "Recreational"
+            } else {
+                return value;
+            }
         }
     }
 
