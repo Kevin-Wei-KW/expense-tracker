@@ -120,11 +120,13 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame):
     :return: nothing
     """
     sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
-    # insert new row
-    df.loc[len(df)+1] = row
 
+    # track dates
     prev_date = datetime.strptime(df.loc[len(df)]["Date"], "%Y-%m-%d")
     cur_date = datetime.strptime(row[0], "%Y-%m-%d")
+
+    # insert new row
+    df.loc[len(df)+1] = row
 
     # sort if new transaction has earlier date
     if cur_date < prev_date:
