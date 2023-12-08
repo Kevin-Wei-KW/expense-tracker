@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import pandas as pd
 import gspread
 from gspread_dataframe import set_with_dataframe
@@ -36,7 +36,7 @@ txn_dict_format = {
 }
 
 test_txn: txn_dict_format = {
-    "date": datetime.datetime.now(),
+    "date": datetime.now(),
     "txn": "food",
     "desc": "details",
     "dr": 0,
@@ -101,17 +101,18 @@ def dataframe_to_json_list(df: pd.DataFrame) -> list[txn_dict_format]:
 # Post
 #
 
+
 def create_row(data: txn_dict_format) -> list:
     """
     create new row (not dependent on column headers)
     :param data: data to be placed into the row, dict typing defined above
     :return: new row as a list
     """
-    date = data["date"] if data["date"] is not None else datetime.datetime.now().strftime('%Y-%m-%d')
+    date = data["date"] if data["date"] is not None else datetime.now().strftime('%Y-%m-%d')
     return [date, data["txn"], data["desc"], data["dr"], data["cr"]]
 
 
-def push_to_spreadsheet(row: list, df: pd.DataFrame) -> bool:
+def push_to_spreadsheet(row: list, df: pd.DataFrame):
     """
     Add row to dataframe, push to spreadsheet
     :param row: the row to be added to dataframe
@@ -121,6 +122,14 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame) -> bool:
     sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
     # insert new row
     df.loc[len(df)+1] = row
+
+    prev_date = datetime.strptime(df.loc[len(df)]["Date"], "%Y-%m-%d")
+    cur_date = datetime.strptime(row[0], "%Y-%m-%d")
+
+    # sort if new transaction has earlier date
+    if cur_date < prev_date:
+        df = df.sort_values(df.columns[0])  # sort first column (date)
+
     set_with_dataframe(sheet, df)
 
 
@@ -140,17 +149,18 @@ def get_column_sum(df: pd.DataFrame, need_cr: bool = True, txn_type: str = "", c
     gets the sum of a column
     :param df: dataframe
     :param need_cr: whether to get cr or dr
-    :param sum_filter: filtering what to add up
+    :param txn_type: header of transaction to add up
+    :param cur_filter: filtering what to add up
     :return:
     """
 
     total: float = 0.0
     header = header_name["cr"] if need_cr else header_name["dr"]
-    year = cur_filter["year"] if "year" in cur_filter else datetime.datetime.now().year
+    year = cur_filter["year"] if "year" in cur_filter else datetime.now().year
     month = cur_filter["month"] if "month" in cur_filter else 0
 
     for row_idx, row in df.iterrows():
-        date = datetime.datetime.strptime(row[header_name["date"]], "%Y-%m-%d")
+        date = datetime.strptime(row[header_name["date"]], "%Y-%m-%d")
         cur_header = row[header_name["txn"]]
         value = row[header].replace(",", "")
 
@@ -168,7 +178,8 @@ def get_column_sum(df: pd.DataFrame, need_cr: bool = True, txn_type: str = "", c
     return total
 
 
-def get_all_stats(df: pd.DataFrame, cur_filter: time_filter = {"year": datetime.datetime.now().year, "month": 0}) -> dict[str, float]:
+def get_all_stats(df: pd.DataFrame,
+                  cur_filter: time_filter = {"year": datetime.now().year, "month": 0}) -> dict[str, float]:
     """
     return all needed stats for stats page
     :param df: dataframe
