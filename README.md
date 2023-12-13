@@ -1,7 +1,7 @@
 # Expense Tracker
 A web application designed for the phone, aiming to make tracking expenses easy and compatible with Google spreadsheets.
 
-For demo: [https://expense-tracker-api-demo.onrender.com](https://expense-tracker-web-demo.onrender.com/)
+For demo: [https://expense-tracker-web-demo.onrender.com](https://expense-tracker-web-demo.onrender.com/)
 
 *Added transactions will be saved in database.
 
