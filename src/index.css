@@ -16,6 +16,10 @@
   overflow: hidden;
 }
 
+html body {
+  background-color: black;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
