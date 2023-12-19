@@ -7,11 +7,15 @@ For demo: [https://expense-tracker-web-demo.onrender.com](https://expense-tracke
 
 *Initial loading may take a minute for Demo server to boot up.
 
+*For display as an app on iOS, add link to homescreen as a bookmark.
+
 ## What does it do?
 - Retrieves formatted transaction data from personal Google Sheets to be displayed comfortably on phone screens.
 - Allows user to enter new transactions while on the go with the clicks of a few buttons.
 - Syncs data to Google Sheets real time for accessibility.
 - Filters transaction history based on selected time periods.
+
+![](./public/expense_tracker.gif)
 
 ## Config
 - **Python**: 3.11.5
