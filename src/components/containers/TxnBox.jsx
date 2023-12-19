@@ -32,6 +32,16 @@ export default function TxnBox(props) {
         }
     }
 
+    function getValueColor() {
+        if(props.value == 0) {
+            return "rgba(255,255,255,0.3)"
+        } else if(props.value > 0) {
+            return "rgba(56,84,44,1)"
+        } else {
+            return "rgba(95,33,33,1)"
+        }
+    }
+
     return(
         <div className="TxnBox">
             <div className="txn-top">
@@ -47,7 +57,7 @@ export default function TxnBox(props) {
                     {provideDefault(props.details, "")}
                 </div>
                 <div className="value" onClick={() => {navigator.clipboard.writeText(Math.abs(props.value))}}>
-                    <div className="value-display" style={{backgroundColor: props.value >= 0? "rgba(56,84,44,1)":"rgba(95,33,33,1)"}}>
+                    <div className="value-display" style={{backgroundColor: getValueColor()}}>
                         {processValue(props.value)}
                     </div>
                 </div>
