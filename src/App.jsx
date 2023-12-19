@@ -3,8 +3,6 @@ import axios from "axios";
 import './App.css'
 
 import Page from "./components/Page.jsx"
-import AddTxn from "./components/AddTxnBtn.jsx"
-import NavBar from "./components/NavBar.jsx"
 
 
 export default function App() {
@@ -13,9 +11,6 @@ export default function App() {
 
   const [statsDict, setStatsDict] = useState({})
   const [loadingStats, setLoadingStats] = useState(false)
-
-  const API_URL = "https://expense-tracker-85pc.onrender.com"
-  // const API_URL = "http://localhost:5000"
 
   function getTxns() {
     setLoadingTxns(true)
@@ -75,7 +70,8 @@ export default function App() {
       }
     })
   }
-
+  const API_URL = "https://expense-tracker-85pc.onrender.com"
+  // const API_URL = "http://localhost:5000"
 
    useEffect(() => getTxns(), []);
    useEffect(() => getStats(), []);

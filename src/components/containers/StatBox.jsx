@@ -37,7 +37,7 @@ export default function StatBox(props) {
             <div className="stat-top">
                 <b>{provideDefault(props.type, "Type")}</b>
             </div>
-            <div className="stat-bottom">
+            <div className="stat-bottom" onClick={() => {navigator.clipboard.writeText(Math.abs(props.value))}}>
                 <div className="stat-value-display" style={{backgroundColor: props.value >= 0? "rgba(56,84,44,1)":"rgba(95,33,33,1)"}}>{processValue(props.value)}</div>
             </div>
         </div>
