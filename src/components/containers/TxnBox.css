@@ -83,4 +83,10 @@
     overflow: hidden;
 
     border-radius: .7rem;
+
+    transition-duration: 0.5s;
+}
+.value-display:active {
+    -webkit-filter: brightness(1.3);
+    cursor: pointer;
 }
