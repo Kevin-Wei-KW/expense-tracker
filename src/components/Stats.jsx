@@ -16,7 +16,7 @@ export default function Stats(props) {
     while(startYear <= yearNow) {
         yearsArr.push(yearNow--)
     }
-    const monthMap = ["Any", "January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    const monthMap = ["All", "January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
     async function getStats(filter) {
         setYear(filter["year"])
