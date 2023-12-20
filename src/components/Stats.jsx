@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import "./Stats.css";
 
 import StatBox from "./containers/StatBox.jsx"
+import StatEqn from "./containers/StatEqn.jsx"
 
 import "./LoadingSpinner.css"
 
@@ -18,11 +19,21 @@ export default function Stats(props) {
     }
     const monthMap = ["All", "January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
+    function getCr() {
+        return props.stats["Food"] + props.stats["Grocery"] + props.stats["School"] + props.stats["Rec"] + props.stats["Misc"];
+    }
+
+    function getDr() {
+        return props.stats["Earning"]
+    }
+
     async function getStats(filter) {
         setYear(filter["year"])
         setMonth(filter["month"])
         await props.getStats(filter)
     }
+
+    useEffect(() => {getStats({"year": year, "month": month})}, [])
 
     return(
         <div className="Stats">
@@ -58,6 +69,15 @@ export default function Stats(props) {
                 <div className="stat-row">
                     <StatBox type="Misc" value={-props.stats["Misc"]}/>
                     <StatBox type="Earning" value={props.stats["Earning"]}/>
+                </div> : ""
+            }
+            {!props.loading ?
+                // <div className="stat-row">
+                //     <StatBox hideLabel={true} type="Earning" value={-getCR()}/>
+                //     <StatBox hideLabel={true} neutralValue={true} type="Earning" value={getDR()-getCR()}/>
+                // </div> : ""
+                <div className="stat-row">
+                    <StatEqn valueDr={getDr()} valueCr={-getCr()} />
                 </div> : ""
             }
 

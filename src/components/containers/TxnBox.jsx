@@ -56,7 +56,7 @@ export default function TxnBox(props) {
                 <div className="details">
                     {provideDefault(props.details, "")}
                 </div>
-                <div className="value" onClick={() => {navigator.clipboard.writeText(Math.abs(props.value))}}>
+                <div className="value" onClick={() => {navigator.clipboard.writeText(formatNumber(Math.abs(props.value)))}}>
                     <div className="value-display" style={{backgroundColor: getValueColor()}}>
                         {processValue(props.value)}
                     </div>

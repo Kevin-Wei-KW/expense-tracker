@@ -22,7 +22,7 @@ export default function Page(props) {
     }
 
     function showAddTxnBtn() {
-        if (pageSelector != "AddTxn") {
+        if (pageSelector != "AddTxn" && pageSelector != "Stats") {
             return <AddTxnBtn setPage={()=>setPageSelector("AddTxn")}/>
         }
     }
