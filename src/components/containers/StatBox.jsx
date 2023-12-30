@@ -14,7 +14,7 @@ export default function StatBox(props) {
 
     function processValue(value) {
         if(value === undefined || isNaN(value)) {
-            return "$_________"
+            return "$0.00"
         }
 
         if(value < 0) {
@@ -33,7 +33,7 @@ export default function StatBox(props) {
     }
 
     function getValueColor() {
-        if(props.value == 0) {
+        if(props.value == 0 || props.value === undefined || isNaN(props.value)) {
             return "rgba(255,255,255,0.3)"
         } else if(props.value > 0) {
             return "rgba(56,84,44,1)"

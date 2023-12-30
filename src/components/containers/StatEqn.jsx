@@ -14,7 +14,7 @@ export default function StatEqn(props) {
 
     function processValue(value) {
         if(value === undefined || isNaN(value)) {
-            return "$_________"
+            return "$0.00"
         }
 
         if(value < 0) {
@@ -33,7 +33,7 @@ export default function StatEqn(props) {
     }
 
     function getValueColor(value) {
-        if(value == 0) {
+        if(value == 0 || value === undefined || isNaN(value)) {
             return "rgba(255,255,255,0.3)"
         } else if(value > 0) {
             return "rgba(56,84,44,1)"

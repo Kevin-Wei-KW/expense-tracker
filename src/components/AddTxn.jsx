@@ -18,6 +18,7 @@ export default function AddTxn(props) {
         { value: 'school', label: 'School' },
         { value: 'misc', label: 'Misc' },
         { value: 'grocery', label: 'Grocery' },
+        { value: 'housing', label: 'Housing' },
         { value: 'earning', label: 'Earning' },
     ]
       
@@ -53,6 +54,7 @@ export default function AddTxn(props) {
                     <option value="School">School</option>
                     <option value="Misc">Misc</option>
                     <option value="Grocery">Grocery</option>
+                    <option value="Housing">Housing</option>
                     <option value="Earning">Earning</option>
                 </select>
                 

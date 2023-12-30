@@ -24,6 +24,7 @@ type_name = {
     "school": "School",
     "misc": "Misc",
     "grocery": "Grocery",
+    "housing": "Housing",
     "earning": "Earning",
 }
 
@@ -194,6 +195,7 @@ def get_all_stats(df: pd.DataFrame,
                                "School": get_column_sum(df, True, "School", cur_filter),
                                "Misc": get_column_sum(df, True, "Misc", cur_filter),
                                "Grocery": get_column_sum(df, True, "Grocery", cur_filter),
+                               "Housing": get_column_sum(df, True, "Housing", cur_filter),
                                "Earning": get_column_sum(df, False, "Earning", cur_filter)}
 
     return stats

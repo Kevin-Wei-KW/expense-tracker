@@ -20,7 +20,7 @@ export default function Stats(props) {
     const monthMap = ["All", "January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
     function getCr() {
-        return props.stats["Food"] + props.stats["Grocery"] + props.stats["School"] + props.stats["Rec"] + props.stats["Misc"];
+        return props.stats["Food"] + props.stats["Grocery"] + props.stats["School"] + props.stats["Rec"] + props.stats["Misc"] + props.stats["Housing"];
     }
 
     function getDr() {
@@ -68,7 +68,7 @@ export default function Stats(props) {
             {!props.loading ? 
                 <div className="stat-row">
                     <StatBox type="Misc" value={-props.stats["Misc"]}/>
-                    <StatBox type="Earning" value={props.stats["Earning"]}/>
+                    <StatBox type="Housing" value={-props.stats["Housing"]}/>
                 </div> : ""
             }
             {!props.loading ?
