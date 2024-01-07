@@ -158,14 +158,16 @@ def get_column_sum(df: pd.DataFrame, need_cr: bool = True, txn_type: str = "", c
     """
 
     total: float = 0.0
-    header = header_name["cr"] if need_cr else header_name["dr"]
+    header_pos = header_name["cr"] if need_cr else header_name["dr"]
+    header_neg = header_name["dr"] if need_cr else header_name["cr"]
     year = cur_filter["year"] if "year" in cur_filter else datetime.now().year
     month = cur_filter["month"] if "month" in cur_filter else 0
 
     for row_idx, row in df.iterrows():
         date = datetime.strptime(row[header_name["date"]], "%Y-%m-%d")
         cur_header = row[header_name["txn"]]
-        value = row[header].replace(",", "")
+        value_pos = row[header_pos].replace(",", "")
+        value_neg = row[header_neg].replace(",", "")
 
         if date.year != year:
             continue
@@ -176,8 +178,8 @@ def get_column_sum(df: pd.DataFrame, need_cr: bool = True, txn_type: str = "", c
         if txn_type != "" and cur_header != txn_type:
             continue
 
-        if is_float(value):
-            total += float(value)
+        if is_float(value_pos) and is_float(value_neg):
+            total += float(value_pos) - float(value_neg)
     return total
 
 

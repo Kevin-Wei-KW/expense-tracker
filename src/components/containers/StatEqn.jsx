@@ -52,7 +52,7 @@ export default function StatEqn(props) {
                 {processValue(props.valueDr)}
             </div>
 
-            <b>-</b>
+            <b>{props.valueCr > 0? "+":"-"}</b>
 
             <div
                 className="eqn-value-display"
