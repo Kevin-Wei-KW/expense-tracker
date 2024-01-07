@@ -83,7 +83,6 @@ export default function AddTxn(props) {
                     details={detail}
                     value={isCr? -amount:amount}
                     clickFunc={() => setIsCr(!isCr)}></TxnBox>
-                <div style={{color: "white"}}>{isCr? "yes":"no"}</div>
 
                 <div className="confirm-cancel">
                     <button className="cancel" type="button" onClick={props.setPage}>Cancel</button>
