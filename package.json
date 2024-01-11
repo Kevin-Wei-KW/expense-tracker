@@ -12,6 +12,7 @@
     "backend": "cd backend && flask run --no-debugger"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.1",
     "axios": "^1.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

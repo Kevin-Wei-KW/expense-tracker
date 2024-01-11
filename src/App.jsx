@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import axios from "axios";
 import './App.css'
 
+import { GoogleLogin} from '@react-oauth/google';
+
 import Page from "./components/Page.jsx"
 
 
@@ -11,6 +13,9 @@ export default function App() {
 
   const [statsDict, setStatsDict] = useState({})
   const [loadingStats, setLoadingStats] = useState(false)
+
+  const [login, setLogin] = useState(false)
+  const [loginError, setLoginError] = useState(false)
 
   function getTxns() {
     setLoadingTxns(true)
@@ -70,13 +75,34 @@ export default function App() {
       }
     })
   }
-  const API_URL = "https://expense-tracker-85pc.onrender.com"
-  // const API_URL = "http://localhost:5000"
+
+  const [t, setT] = useState("");
+  function setupLogin(response) {
+    const accessToken = response.credential;
+    setLogin(true);
+    if(accessToken != '') {
+      console.log(accessToken);
+    } else {
+      console.log("fail");
+    }
+  }
+
+
+  // const API_URL = "https://expense-tracker-85pc.onrender.com"
+  const API_URL = "http://localhost:5000"
 
   useEffect(() => getTxns(), []);
 
   return (
     <div className="App">
+      {!login && 
+      <GoogleLogin
+        onSuccess={(response) => setupLogin(response)}
+        onError={() => setLoginError(true)}
+        scope="profile email"
+      />}
+
+      {login && 
       <Page
         txns={txnDataList}
         stats={statsDict}
@@ -85,32 +111,23 @@ export default function App() {
         pushTxns={pushTxns} 
         loadingStats={loadingStats} 
         loadingTxns={loadingTxns}
-      />
+      />}
 
-      {/* <header className="App-header">
-        <img src={reactLogo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      {!login && loginError &&
+      <div>
+        ERROR! Try logging in again.
+      </div>
+      }
 
-        <p>To get your profile details: </p><button onClick={getTxns}>Click me</button>
-        {txnData && <div>
-              <p>Date: {txnData.date}</p>
-              <p>Type: {txnData.txn}</p>
-              <p>Details: {txnData.desc}</p>
-              <p>DR: {txnData.dr}</p>
-              <p>CR: {txnData.cr}</p>
-            </div>
-        }
-      </header> */}
+      {/* <Page
+        txns={txnDataList}
+        stats={statsDict}
+        getTxns={getTxns}
+        getStats={getStats}
+        pushTxns={pushTxns} 
+        loadingStats={loadingStats} 
+        loadingTxns={loadingTxns}
+      /> */}
     </div>
   );
 }
