@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from "axios";
 import './App.css'
 
-import { GoogleLogin} from '@react-oauth/google';
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 
 import Page from "./components/Page.jsx"
 
@@ -19,22 +19,15 @@ export default function App() {
 
   function getTxns() {
     setLoadingTxns(true)
-    axios({
-      method: "GET",
-      url: API_URL+"/txns",
-    })
+    axios.get(
+      API_URL+"/txns"
+    )
     .then((response) => {
       const res = response.data
       setLoadingTxns(false)
       setTxnDataList([...res])
     })
-    .catch((error) => {
-      if (error.response) {
-        console.log(error.response)
-        console.log(error.response.status)
-        console.log(error.response.headers)
-      }
-    })
+    .catch((error) => logError(error))
   }
 
   function pushTxns(data) {
@@ -45,13 +38,7 @@ export default function App() {
       getTxns()
       getStats()
     })
-    .catch((error) => {
-      if (error.response) {
-        console.log(error.response)
-        console.log(error.response.status)
-        console.log(error.response.headers)
-      }
-    })
+    .catch((error) => logError(error))
   }
 
   function getStats(data = {"year": 2023, "month": 0}) {
@@ -67,23 +54,42 @@ export default function App() {
       setLoadingStats(false)
       setStatsDict(res)
     })
-    .catch((error) => {
-      if (error.response) {
-        console.log(error.response)
-        console.log(error.response.status)
-        console.log(error.response.headers)
-      }
-    })
+    .catch((error) => logError(error))
   }
 
-  const [t, setT] = useState("");
   function setupLogin(response) {
-    const accessToken = response.credential;
+    const authorizationCode = response.code;
     setLogin(true);
-    if(accessToken != '') {
-      console.log(accessToken);
-    } else {
-      console.log("fail");
+    
+    axios.post(
+      API_URL+"/login",
+      { code: authorizationCode },
+      { headers: {'Content-Type': 'application/json'} },
+    )
+    .then(() => {
+      setLogin(true);
+      getTxns();
+      console.log("LOGGEDIN")
+    })
+    .catch((error) => logError(error))
+  }
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      setupLogin(codeResponse);
+    },
+    onError: ()=> {
+      console.log("error");
+    },
+    flow: 'auth-code',
+    scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.readonly"
+  })
+
+  function logError(error) {
+    if (error.response) {
+      console.log(error.response)
+      console.log(error.response.status)
+      console.log(error.response.headers)
     }
   }
 
@@ -91,16 +97,23 @@ export default function App() {
   // const API_URL = "https://expense-tracker-85pc.onrender.com"
   const API_URL = "http://localhost:5000"
 
-  useEffect(() => getTxns(), []);
+  // useEffect(() => getTxns(), []);
 
   return (
     <div className="App">
-      {!login && 
+      {/* {!login && 
       <GoogleLogin
-        onSuccess={(response) => setupLogin(response)}
+        onSuccess={(credentialResponse) => setupLogin(credentialResponse)}
         onError={() => setLoginError(true)}
-        scope="profile email"
-      />}
+        useOneTap
+        flow="auth-code"
+      />} */}
+
+      {!login &&
+      <button onClick={() => googleLogin()}>
+        Sign in with Google
+      </button>
+      }
 
       {login && 
       <Page

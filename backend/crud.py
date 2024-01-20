@@ -1,14 +1,28 @@
 from datetime import datetime
+import json
+
 import pandas as pd
 import gspread
+import requests
+from google_auth_oauthlib import flow
 from gspread_dataframe import set_with_dataframe
 from oauth2client.service_account import ServiceAccountCredentials
 
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+from google.auth.transport.requests import Request
+from google.oauth2 import id_token
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
-creds = ServiceAccountCredentials.from_json_keyfile_name('expensetracker.json', scope)
+
+
+scopes = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+
+creds = ServiceAccountCredentials.from_json_keyfile_name('expensetracker.json', scopes)
 
 client = gspread.authorize(creds)
+# client = ''
 
 header_name = {
     "date": "Date",
@@ -48,8 +62,110 @@ test_txn: txn_dict_format = {
 # Setup
 #
 
+# TARGET_SHEET = "Personal Expenses"
+# TARGET_WORKSHEET = "Txns"
 TARGET_SHEET = "Personal Expenses"
 TARGET_WORKSHEET = "Txns"
+
+
+access_token = "ya29.a0AfB_byDt0mujh81NNsPJkB2L1tPTl1LUKD1ISCAxgKfVr79EuYSaGyQsMCES1O8C7XAfcU7cjJe0LEhrFNpKyDRPWMcp1_bvZHTkzAlnGLBjPF3ESC4hOPs7ZKjpi97xvxZASxJH0Hb5zgS3dhKcaAK0XArhFOY7Di4tgwaCgYKAZsSARISFQHGX2MiLM46nFsofAo_eNmIa53gRw0173"
+refresh_token = "1//051qbj3FsXLqfCgYIARAAGAUSNwF-L9IribW0hbriLVOGw3UVcNSIPcGqKKiwxY4j3ivroJTuxdkXZKaqdeU9fzUBs18wrUMFlR4"
+
+def connect_client():
+    # Validate and decode the access token
+
+    with open('api_client_secret.json', 'r') as file:
+        secret_obj = json.load(file)["web"]
+        client_id = secret_obj.get('client_id', None)
+        client_secret = secret_obj.get('client_secret', None)
+
+    credentials = Credentials(
+        client_id=client_id,
+        client_secret=client_secret,
+        token_uri='https://oauth2.googleapis.com/token',
+        scopes=scopes,
+        token=access_token,
+        refresh_token=refresh_token,
+    )
+
+    service = build('sheets', 'v4', credentials=credentials)
+
+    spreadsheet_id = '15rXCQU94j6aHkHzjDFSXq9nQ3QRmGlaMXHFDB5DAW8E'
+    file_name='test sheet'
+    sheet_name='test'
+    range_ = 'test!A1:E4'
+
+    # credentials = Credentials.from_authorized_user_info({'token':access_token})
+
+    gc = gspread.authorize(credentials)
+    sh = gc.open(file_name)
+    worksheet = sh.worksheet(sheet_name)
+
+    data = worksheet.get_all_values()
+    df = pd.DataFrame(data[1:], columns=data[0])
+    print(df)
+
+    df.loc[len(df)+1] = ['test', 'test2', 'test3', 0, 1]
+
+    set_with_dataframe(worksheet, df)
+
+
+
+    # api_key="AIzaSyBx6OB7X2QUpcJxQ6XmcBqsHz9fdLj7gbQ"
+    # api_url = f'https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}/values/{sheet_name}?alt=json&key={api_key}'
+    # response = requests.get(api_url)
+    #
+    # if response.status_code == 200:
+    #     sheet_data = response.json()
+    #     values = sheet_data.get('values', [])
+    #     print('Values:')
+    #     for row in values:
+    #         print(row)
+    # else:
+    #     print(f"Error: {response.status_code}, {response.text}")
+
+    # result = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_).execute()
+
+
+
+
+    # # request access token with authentication code
+    # auth_flow = flow.Flow.from_client_secrets_file('api_client_secret.json',
+    #                                                scopes=scopes,
+    #                                                redirect_uri="http://localhost:5173/")
+    # print(auth_flow)
+    #
+    # auth_flow.fetch_token(code=code)
+    #
+    # credentials = auth_flow.credentials
+
+    # # store test
+    # json_object = json.dumps(credentials, indent=4)
+    #
+    # with open("info.json", "w") as file:
+    #     file.write(json_object)
+
+    # with open('api_client_secret.json', 'r') as file:
+    #     data = json.load(file)
+    #     client_id = data.get('client_id')
+    #     client_secret = data.get('client_secret')
+    #
+    # # Use the ID token to create a `google.auth.credentials.Credentials` instance
+    # # credentials = Credentials.from_authorized_user_info(id_info)
+    # credentials = Credentials.from_authorized_user_info({
+    #     'token': access_token,
+    #     'token_uri': 'https://oauth2.googleapis.com/token',
+    #     'client_id': client_id,
+    #     'client_secret': client_secret,
+    #     'scopes': ['https://www.googleapis.com/auth/spreadsheets']},
+    # )
+    #
+    # Authorize gspread with the credentials
+    global client
+    client = gspread.authorize(credentials)
+
+    sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
+    return sheet
 
 
 def get_dataframe() -> pd.DataFrame:
