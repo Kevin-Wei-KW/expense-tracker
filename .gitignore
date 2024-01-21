@@ -27,6 +27,6 @@ dist-ssr
 /backend/expensetracker.json
 /backend/api_client_secret.json
 /backend/desktop_client_secret.json
-/backend/.env
+/.env
 /src/api_client_secret.json
 /backend/env/

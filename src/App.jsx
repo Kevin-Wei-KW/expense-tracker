@@ -57,6 +57,21 @@ export default function App() {
     .catch((error) => logError(error))
   }
 
+  function getStatus() {
+    axios.get(
+      API_URL+"/status"
+    )
+    .then((response) => {
+      const res = response.data
+      if(res == "login") {
+        googleLogin()
+        setLogin(false);
+      } else {
+        googleLogin();
+      }
+    })
+  }
+
   function setupLogin(response) {
     const authorizationCode = response.code;
     setLogin(true);
@@ -69,7 +84,6 @@ export default function App() {
     .then(() => {
       setLogin(true);
       getTxns();
-      console.log("LOGGEDIN")
     })
     .catch((error) => logError(error))
   }
@@ -97,7 +111,7 @@ export default function App() {
   // const API_URL = "https://expense-tracker-85pc.onrender.com"
   const API_URL = "http://localhost:5000"
 
-  // useEffect(() => getTxns(), []);
+  useEffect(() => getStatus(), []);
 
   return (
     <div className="App">
