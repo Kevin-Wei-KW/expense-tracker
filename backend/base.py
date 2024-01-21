@@ -1,20 +1,20 @@
 import json
-import flask
+import secrets
 import requests
 from dotenv import load_dotenv
 
-import google_auth_oauthlib
-import google.oauth2.credentials
-import googleapiclient
-from google_auth_oauthlib.flow import Flow, InstalledAppFlow
-
+import flask
 from flask import Flask, request, jsonify, redirect, session
 from flask_cors import CORS, cross_origin
 import sys, os
 
+from google.oauth2.credentials import Credentials
+
+
 sys.path.append(os.getcwd())
 
 api = flask.Flask(__name__)
+api.secret_key = secrets.token_hex(16)
 CORS(api)
 
 load_dotenv()
@@ -35,7 +35,7 @@ def get_new_access_token():
 
     data = {
         'grant_type': REFRESH_GRANT,
-        'refresh_token': "1//051qbj3FsXLqfCgYIARAAGAUSNwF-L9IribW0hbriLVOGw3UVcNSIPcGqKKiwxY4j3ivroJTuxdkXZKaqdeU9fzUBs18wrUMFlR4",
+        'refresh_token': session['refresh_token'],
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET
     }
@@ -44,7 +44,7 @@ def get_new_access_token():
     if response.status_code == 200:
         new_token_data = response.json()
         new_access_token = new_token_data.get('access_token')
-        print(f'New Access Token: {new_access_token}')
+        return new_access_token
     else:
         print(f'Error: {response.status_code}, {response.text}')
 
@@ -65,8 +65,27 @@ def exchange_auth_for_tokens(auth_code: str):
     }
 
     response = requests.post(TOKEN_ENDPOINT, headers=headers, data=payload)
-    tokens = response.json()
-    return tokens
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
+
+def establish_session(auth_code):
+    # Check if user has access token
+    if 'access_token' in session:
+        return True
+    elif 'refresh_token' in session:
+        session['access_token'] = get_new_access_token()
+        return True
+    elif auth_code:
+        token_response = exchange_auth_for_tokens(auth_code)
+        session['access_token'] = token_response['access_token']
+        session['refresh_token'] = token_response['refresh_token']
+        return True
+    else:
+        return False
 
 
 @api.route('/login', methods=['POST'])
@@ -74,18 +93,24 @@ def login():
     import crud as c
     auth_code = request.get_json()["code"]
 
-    print(exchange_auth_for_tokens(auth_code))
+    token_established = establish_session(auth_code)
+    scopes = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
-    try:
-        # get_new_access_token()
-        c.connect_client()
-
-        return " "
-    except Exception as error:
-        print('Token exchange error:', error)
-        return jsonify({'error': 'Internal Server Error'}), 500
-
-    return "done"
+    if token_established:
+        credentials = Credentials(
+            client_id=CLIENT_ID,
+            client_secret=CLIENT_SECRET,
+            token_uri='https://oauth2.googleapis.com/token',
+            scopes=scopes,
+            token=session['access_token'],
+            refresh_token=session['refresh_token']
+        )
+        try:
+            return c.connect_client(credentials)
+        except:
+            return "Connection Unsuccessful"
+    else:
+        return "Login Error", 500
 
 
 @api.route('/txns', methods=['GET', 'POST'])
