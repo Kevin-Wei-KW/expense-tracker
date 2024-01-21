@@ -42,7 +42,10 @@ def auth_status():
 @api.route('/login', methods=['POST'])
 def login():
     import crud as c
-    auth_code = request.get_json()["code"]
+    body = request.get_json()
+    auth_code = body["code"]
+    sheet_name = body["sheetName"]
+    worksheet_title = body["worksheetTitle"]
 
     token_established = establish_session(auth_code)
     scopes = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
@@ -58,9 +61,9 @@ def login():
         )
 
         try:
-            return c.connect_client(credentials)
+            return c.connect_client(credentials, sheet_name, worksheet_title)
         except:
-            return "Connection Unsuccessful"
+            return "Connection Unsuccessful", 500
     else:
         return "Login Error", 500
 

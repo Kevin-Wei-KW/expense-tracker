@@ -1,29 +1,12 @@
 from datetime import datetime
-import json
 
 import pandas as pd
 import gspread
-import requests
-from google_auth_oauthlib import flow
+
 from gspread import Worksheet
 from gspread_dataframe import set_with_dataframe
-from oauth2client.service_account import ServiceAccountCredentials
-
-from google.auth.transport.requests import Request
-from google.oauth2 import id_token
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
-
-
 
 scopes = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-
-# creds = ServiceAccountCredentials.from_json_keyfile_name('expensetracker.json', scopes)
-#
-# client = gspread.authorize(creds)
-# client = ''
 
 header_name = {
     "date": "Date",
@@ -70,16 +53,14 @@ TARGET_WORKSHEET = "Txns"
 sheet: Worksheet = None
 
 
-def connect_client(credentials):
+def connect_client(credentials, sheet_name, worksheet_title):
 
-    file_name='test sheet'
-    sheet_name='test'
 
     gc = gspread.authorize(credentials)
-    sh = gc.open(file_name)
+    sh = gc.open(sheet_name)
 
     global sheet
-    sheet = sh.worksheet(sheet_name)
+    sheet = sh.worksheet(worksheet_title)
 
     # data = sheet.get_all_values()
     # df = pd.DataFrame(data[1:], columns=data[0])
@@ -160,7 +141,7 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame):
     :param df: the dataframe
     :return: nothing
     """
-    sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
+    # sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
 
     # track dates
     prev_date = datetime.strptime(df.loc[len(df)]["Date"], "%Y-%m-%d")

@@ -5,6 +5,7 @@ import './App.css'
 import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 
 import Page from "./components/Page.jsx"
+import LoginPage from "./components/LoginPage.jsx"
 
 
 export default function App() {
@@ -14,8 +15,11 @@ export default function App() {
   const [statsDict, setStatsDict] = useState({})
   const [loadingStats, setLoadingStats] = useState(false)
 
+  const [loginMessage, setLoginMessage] = useState("Connect to Your Google Sheet")
   const [login, setLogin] = useState(false)
   const [loginError, setLoginError] = useState(false)
+  const [sheetName, setSheetName] = useState()
+  const [worksheetTitle, setWorksheetTitle] = useState()
 
   function getTxns() {
     setLoadingTxns(true)
@@ -64,30 +68,34 @@ export default function App() {
     .then((response) => {
       const res = response.data
       if(res == "login") {
-        googleLogin()
         setLogin(false);
       } else {
-        googleLogin();
+        setLogin(true);
       }
     })
   }
 
   function setupLogin(response) {
     const authorizationCode = response.code;
-    setLogin(true);
     
     axios.post(
       API_URL+"/login",
-      { code: authorizationCode },
+      { code: authorizationCode,
+        sheetName: sheetName,
+        worksheetTitle: worksheetTitle },
       { headers: {'Content-Type': 'application/json'} },
     )
-    .then(() => {
-      setLogin(true);
-      getTxns();
+    .then((response) => {
+      if(response.status == 200) {
+        setLogin(true);
+        getTxns();
+      }
     })
-    .catch((error) => logError(error))
+    .catch((error) => {
+      logError(error)
+      setLoginMessage("Sheet not found: check name/title")
+    })
   }
-
   const googleLogin = useGoogleLogin({
     onSuccess: (codeResponse) => {
       setupLogin(codeResponse);
@@ -124,9 +132,12 @@ export default function App() {
       />} */}
 
       {!login &&
-      <button onClick={() => googleLogin()}>
-        Sign in with Google
-      </button>
+      <LoginPage
+        loginMessage={loginMessage}
+        setSheetName={setSheetName}
+        setWorksheetTitle={setWorksheetTitle}
+        login={googleLogin}
+      />
       }
 
       {login && 
