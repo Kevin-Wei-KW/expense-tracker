@@ -64,3 +64,29 @@
     font-size: 22px;
     margin: 5vh;
 }
+
+.tutorial-btn {
+    position: absolute;
+    bottom: 5vh;
+    font-size: 24px;
+
+    box-shadow: 0 0 10px gray;
+}
+
+.tutorial {
+    position: absolute;
+    top:0;
+    height: 100%;
+    width: 90%;
+
+    background-color: black;
+    opacity: 88%;
+
+    /* padding-left: 10vw; */
+    /* text-indent: 7vw; */
+    text-align: left;
+
+    z-index: 100;
+    overflow-y: auto;
+
+}
