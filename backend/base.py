@@ -74,6 +74,9 @@ def txns():
     """
     import crud as c
 
+    if('access_token' not in session and 'refresh_token' in session):
+        establish_session(session['auth_code'])
+
     if request.method == "GET":
         df = c.get_dataframe()
 

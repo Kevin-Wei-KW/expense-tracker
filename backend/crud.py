@@ -152,14 +152,14 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame):
     """
 
     # track dates
-    prev_date = datetime.strptime(df.loc[len(df)]["Date"], "%Y-%m-%d")
+    prev_date = datetime.strptime(df.loc[len(df)]["Date"], "%Y-%m-%d") if len(df) > 1 else None
     cur_date = datetime.strptime(row[0], "%Y-%m-%d")
 
     # insert new row
     df.loc[len(df)+1] = row
 
     # sort if new transaction has earlier date
-    if cur_date < prev_date:
+    if prev_date is not None and cur_date < prev_date:
         df = df.sort_values(df.columns[0])  # sort first column (date)
 
     set_with_dataframe(sheet, df)
