@@ -18,7 +18,7 @@ header_name = {
 
 type_name = {
     "food": "Food",
-    "rec": "Rec",
+    "recreation": "Recreation",
     "school": "School",
     "misc": "Misc",
     "grocery": "Grocery",
@@ -222,7 +222,7 @@ def get_all_stats(df: pd.DataFrame,
     """
 
     stats: dict[str, float] = {"Food": get_column_sum(df, True, "Food", cur_filter),
-                               "Rec": get_column_sum(df, True, "Rec", cur_filter),
+                               "Recreation": get_column_sum(df, True, "Recreation", cur_filter),
                                "School": get_column_sum(df, True, "School", cur_filter),
                                "Misc": get_column_sum(df, True, "Misc", cur_filter),
                                "Grocery": get_column_sum(df, True, "Grocery", cur_filter),

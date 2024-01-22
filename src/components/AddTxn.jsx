@@ -16,7 +16,7 @@ export default function AddTxn(props) {
 
     const typeOptions = [
         { value: 'food', label: 'Food' },
-        { value: 'rec', label: 'Rec' },
+        { value: 'recreation', label: 'Recreation' },
         { value: 'school', label: 'School' },
         { value: 'misc', label: 'Misc' },
         { value: 'grocery', label: 'Grocery' },
@@ -52,7 +52,6 @@ export default function AddTxn(props) {
         } else {
             setIsCr(true);
         }
-        console.log(isCr);
     }
 
     return(
@@ -63,7 +62,7 @@ export default function AddTxn(props) {
 
                 <select className="line-input" value={type} onChange={(e) => updateType(e.target.value)}>
                     <option value="Food">Food</option>
-                    <option value="Rec">Rec</option>
+                    <option value="Recreation">Recreation</option>
                     <option value="School">School</option>
                     <option value="Misc">Misc</option>
                     <option value="Grocery">Grocery</option>
