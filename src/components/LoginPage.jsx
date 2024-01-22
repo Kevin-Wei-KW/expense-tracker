@@ -29,7 +29,7 @@ export default function Page(props) {
                 <br/>
                 <br/>
                 <span style={{display:"inline-block"}}>
-                    <b>Warning - contents of worksheet will be overwritten.</b>
+                    <b>Warning - contents of selected worksheet will be overwritten.</b>
                 </span>
                 <h3>Step 3:</h3>
                 <span style={{display:"inline-block"}}>
@@ -39,8 +39,13 @@ export default function Page(props) {
                 <span style={{display:"inline-block"}}>
                     Once logged in, your selected Google Sheet is automatically templated.
                 </span>
+                <br/>
+                <br/>
+                <span style={{display:"inline-block"}}>
+                    <b>Do not edit headers once templated (style changes are okay).</b>
+                </span>
                 
-                <h3 style={{marginTop: "10vh"}}>Disclaimer:</h3>
+                <h3 style={{marginTop: "5vh"}}>Disclaimer:</h3>
                 <span style={{display:"inline-block"}}>
                     This web application will gain access to read/write on your Google Sheets. However, only your selected spreadsheet will be accessed.
                 </span>
