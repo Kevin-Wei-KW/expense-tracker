@@ -117,7 +117,8 @@ export default function App() {
 
 
   // const API_URL = "https://expense-tracker-85pc.onrender.com"
-  const API_URL = "http://localhost:5000"
+  const API_URL = "https://test-expense-tracker-api.onrender.com"
+  // const API_URL = "http://localhost:5000"
 
   useEffect(() => getStatus(), []);
 
