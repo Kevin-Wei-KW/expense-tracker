@@ -47,6 +47,8 @@ def login():
     sheet_name = body["sheetName"]
     worksheet_title = body["worksheetTitle"]
 
+    session['auth_code'] = auth_code
+
     token_established = establish_session(auth_code)
     scopes = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
@@ -74,7 +76,7 @@ def txns():
     """
     import crud as c
 
-    if('access_token' not in session and 'refresh_token' in session):
+    if 'access_token' not in session and 'refresh_token' in session:
         establish_session(session['auth_code'])
 
     if request.method == "GET":
