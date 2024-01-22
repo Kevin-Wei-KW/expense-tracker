@@ -157,8 +157,10 @@ def exchange_auth_for_tokens(auth_code: str):
 
 
 def establish_session(auth_code):
-    # Check if user has access token
-    if 'access_token' in session:
+    verification_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
+
+    if ('access_token' in session and
+            requests.get(verification_url, params={'access_token': session['access_token']}).status_code == 200):
         return True
     elif 'refresh_token' in session:
         session['access_token'] = get_new_access_token()
