@@ -59,7 +59,6 @@ def login():
             token=session['access_token'],
             refresh_token=session['refresh_token']
         )
-
         try:
             return c.connect_client(credentials, sheet_name, worksheet_title)
         except:

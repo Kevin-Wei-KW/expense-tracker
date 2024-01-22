@@ -46,10 +46,6 @@ test_txn: txn_dict_format = {
 # Setup
 #
 
-# TARGET_SHEET = "Personal Expenses"
-# TARGET_WORKSHEET = "Txns"
-TARGET_SHEET = "Personal Expenses"
-TARGET_WORKSHEET = "Txns"
 sheet: Worksheet = None
 
 
@@ -62,15 +58,29 @@ def connect_client(credentials, sheet_name, worksheet_title):
     global sheet
     sheet = sh.worksheet(worksheet_title)
 
-    # data = sheet.get_all_values()
-    # df = pd.DataFrame(data[1:], columns=data[0])
-    # print(df)
-    #
-    # df.loc[len(df)+1] = [' test', 'test2', 'test3', 0, 1]
-    #
-    # set_with_dataframe(sheet, df)
+    setup_sheet()
 
     return "Connected"
+
+
+def setup_sheet():
+    """
+    Sets up a new spreadsheet
+    """
+
+    df = pd.DataFrame(sheet.get_all_values())
+
+    headers = ["Date", "Transaction", "Description", "Dr", "Cr"]
+
+    # Clear content and headers
+    if df.loc[0].values.tolist() != headers:
+        sheet.clear()
+        blank_df = pd.DataFrame([headers])
+        blank_df.columns = blank_df.iloc[0]
+        blank_df = blank_df.drop(blank_df.index[0])
+        set_with_dataframe(sheet, blank_df)
+
+
 
 
 def get_dataframe() -> pd.DataFrame:
@@ -78,7 +88,6 @@ def get_dataframe() -> pd.DataFrame:
     Retrieve dataframe from spreadsheet
     :return: pandas dataframe object
     """
-    # sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
 
     df = pd.DataFrame(sheet.get_all_values())
     df.columns = df.iloc[0]
@@ -141,7 +150,6 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame):
     :param df: the dataframe
     :return: nothing
     """
-    # sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
 
     # track dates
     prev_date = datetime.strptime(df.loc[len(df)]["Date"], "%Y-%m-%d")
