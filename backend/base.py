@@ -49,7 +49,7 @@ def login():
 
     session['auth_code'] = auth_code
 
-    token_established = establish_session(auth_code)
+    token_established = establish_session(session['auth_code'])
     scopes = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
     if token_established:
@@ -76,7 +76,7 @@ def txns():
     """
     import crud as c
 
-    establish_session(session['auth_code'])
+    establish_session(session.get('auth_code', None))
 
     if request.method == "GET":
         df = c.get_dataframe()
