@@ -51,7 +51,6 @@ sheet: Worksheet = None
 
 def connect_client(credentials, sheet_name, worksheet_title):
 
-
     gc = gspread.authorize(credentials)
     sh = gc.open(sheet_name)
 

@@ -1,5 +1,7 @@
 import json
 import secrets
+from datetime import timedelta, datetime
+
 import requests
 from dotenv import load_dotenv
 
@@ -7,6 +9,7 @@ import flask
 from flask import Flask, request, jsonify, redirect, session
 from flask_cors import CORS, cross_origin
 import sys, os
+import jwt
 
 from google.oauth2.credentials import Credentials
 
@@ -14,6 +17,9 @@ from google.oauth2.credentials import Credentials
 sys.path.append(os.getcwd())
 
 api = flask.Flask(__name__)
+api.permanent_session_lifetime = timedelta(days=7)
+api.config['SESSION_COOKIE_NAME'] = 'expense_tracker'  # set cookie name
+
 CORS(api, supports_credentials=True)
 
 load_dotenv()
@@ -39,34 +45,91 @@ def auth_status():
     else:
         return "login"
 
-@api.route('/login', methods=['POST'])
+
+def generate_jwt(value, token_type="access_token"):
+    """
+    generates jwt for tokens
+    """
+    expiration = datetime.utcnow()
+    if token_type == "access_token":
+        expiration += timedelta(minutes=15)
+    else:
+        expiration += timedelta(days=7)
+
+    payload = {
+        token_type: value,
+        "exp": expiration
+    }
+    jwt_token = jwt.encode(payload, api.secret_key, algorithm="HS256")
+    return jwt_token
+
+
+def decode_jwt(token_jwt, token_type="access_token"):
+    """
+    decodes jwt into token
+    """
+    try:
+        result = jwt.decode(token_jwt, api.secret_key, algorithms=["HS256"])
+        print("RESULT")
+        print(result[token_type])
+        return result[token_type]
+    except jwt.exceptions.InvalidTokenError as e:
+        print(e)
+        return None
+    except Exception as e:
+        print(e)
+        return None
+
+
+@api.route('/login', methods=['GET'])
 def login():
     import crud as c
-    body = request.get_json()
-    auth_code = body["code"]
-    sheet_name = body["sheetName"]
-    worksheet_title = body["worksheetTitle"]
 
-    session['auth_code'] = auth_code
+    # body = request.get_json()
+    auth_code = request.args.get("code")
 
-    token_established = establish_session(session['auth_code'])
+    try:
+        tokens = exchange_auth_for_tokens(auth_code)
+        print("ACCESS:" + tokens["access_token"])
+        # print(tokens["refresh_token"])
+        return {
+            "access_token": generate_jwt(tokens["access_token"], "access_token"),
+            "refresh_token": generate_jwt(tokens["refresh_token"], "refresh_token")
+        }
+    except Exception:
+        print("Login Authentication Failed")
+        return "Login Authentication Failed"
+
+
+def establish_access(sheet_name, worksheet_title, access_token, refresh_token):
+    import crud as c
+
     scopes = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
-    if token_established:
-        credentials = Credentials(
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET,
-            token_uri='https://oauth2.googleapis.com/token',
-            scopes=scopes,
-            token=session['access_token'],
-            refresh_token=session['refresh_token']
-        )
+    # token_valid = verify_access(access_token)
+    verified_access_token = access_token
+    if not verify_access(access_token):
         try:
-            return c.connect_client(credentials, sheet_name, worksheet_title)
-        except:
-            return "Connection Unsuccessful", 500
-    else:
-        return "Login Error", 500
+            verified_access_token = get_new_access_token(refresh_token)
+        except Exception:
+            return "Reauth"
+
+    credentials = Credentials(
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        token_uri='https://oauth2.googleapis.com/token',
+        scopes=scopes,
+        token=verified_access_token,
+        refresh_token=refresh_token
+    )
+    try:
+        c.connect_client(credentials, sheet_name, worksheet_title)
+        return {
+            "access_token": generate_jwt(verified_access_token, "access_token"),
+            "refresh_token": generate_jwt(refresh_token, "refresh_token")
+        }
+    except:
+        return "Connection Unsuccessful", 500
 
 
 @api.route('/txns', methods=['GET', 'POST'])
@@ -76,26 +139,37 @@ def txns():
     """
     import crud as c
 
-    establish_session(session.get('auth_code', None))
+    sheet_name = request.args.get("sheetName")
+    worksheet_title = request.args.get("worksheetTitle")
+    access_token = decode_jwt(request.args.get("accessJwt"), "access_token")
+    refresh_token = decode_jwt(request.args.get("refreshJwt"), "refresh_token")
 
-    if request.method == "GET":
-        df = c.get_dataframe()
+    try:
+        response = establish_access(sheet_name, worksheet_title, access_token, refresh_token)
+        if request.method == "GET":
+            df = c.get_dataframe()
 
-        try:
-            return c.dataframe_to_json_list(df)
-        except:
-            raise Exception("Failed to get transactions")
+            try:
+                return {
+                    "txns": c.dataframe_to_json_list(df),
+                    "jwts": response
+                }
+            except:
+                raise Exception("Failed to get transactions")
 
-    elif request.method == "POST":
-        data = request.get_json()
-        new_row = c.create_row(data)
-        df = c.get_dataframe()
+        elif request.method == "POST":
+            data = body["txn"]
+            new_row = c.create_row(data)
+            df = c.get_dataframe()
 
-        try:
-            c.push_to_spreadsheet(new_row, df)
-            return new_row
-        except:
-            raise Exception("Failed to add new transaction")
+            try:
+                c.push_to_spreadsheet(new_row, df)
+                return response
+            except Exception:
+                raise Exception("Failed to add new transaction")
+
+    except Exception:
+        return "Reauth"
 
 
 @api.route('/stats', methods=['GET'])
@@ -115,11 +189,11 @@ def stats():
             raise Exception("Failed to get stats")
 
 
-def get_new_access_token():
+def get_new_access_token(refresh_token):
 
     data = {
         'grant_type': REFRESH_GRANT,
-        'refresh_token': session['refresh_token'],
+        'refresh_token': refresh_token,
         'client_id': CLIENT_ID,
         'client_secret': CLIENT_SECRET
     }
@@ -156,19 +230,32 @@ def exchange_auth_for_tokens(auth_code: str):
         return None
 
 
+def verify_access(access_token):
+    verification_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
+    if requests.get(verification_url, params={'access_token': access_token}).status_code == 200:
+        return True
+    else:
+        return False
+
+
 def establish_session(auth_code):
     verification_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
 
     if ('access_token' in session and
             requests.get(verification_url, params={'access_token': session['access_token']}).status_code == 200):
+        # print("valid token")
         return True
     elif 'refresh_token' in session:
         session['access_token'] = get_new_access_token()
+        # print("refresh token")
+        print(session)
         return True
     elif auth_code:
+        # print("new token")
         token_response = exchange_auth_for_tokens(auth_code)
         session['access_token'] = token_response['access_token']
         session['refresh_token'] = token_response['refresh_token']
+        print(session)
         return True
     else:
         return False

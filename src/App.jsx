@@ -15,28 +15,52 @@ export default function App() {
   const [statsDict, setStatsDict] = useState({})
   const [loadingStats, setLoadingStats] = useState(false)
 
-  const [loginMessage, setLoginMessage] = useState("Connect to Your Google Sheet")
+  const [loginMessage, setLoginMessage] = useState("Connect to Google Drive")
   const [login, setLogin] = useState(false)
   const [loginError, setLoginError] = useState(false)
   const [sheetName, setSheetName] = useState()
   const [worksheetTitle, setWorksheetTitle] = useState()
 
+  const [accessJwt, setAccessJwt] = useState()
+  const [refreshJwt, setRefreshJwt] = useState()
+
   function getTxns() {
     setLoadingTxns(true)
+
     axios.get(
-      API_URL+"/txns"
+      API_URL+"/txns",
+      { params: {
+        sheetName: sheetName,
+        worksheetTitle: worksheetTitle,
+        accessJwt: accessJwt,
+        refreshJwt: refreshJwt,
+      }
+      },
     )
     .then((response) => {
-      const res = response.data
+      const txns = response.data["txns"]
+      const jwts = response.data["jwts"]
+
+      // setAccessJwt(jwts["access_token"])
+      // setRefreshJwt(jwts["refresh_token"])
+      // modifyTokens(jwts["access_token"], jwts["refresh_token"])
+
+
       setLoadingTxns(false)
-      setTxnDataList([...res])
+      setTxnDataList([...txns])
     })
     .catch((error) => logError(error))
   }
 
   function pushTxns(data) {
     axios.post(
-      API_URL+"/txns", data
+      API_URL+"/txns", {
+        txn: data,
+        sheetName: sheetName,
+        worksheetTitle: worksheetTitle,
+        accessJwt: accessJwt,
+        refreshJwt: refreshJwt
+      }
     )
     .then(() => {
       getTxns()
@@ -45,7 +69,7 @@ export default function App() {
     .catch((error) => logError(error))
   }
 
-  function getStats(data = {"year": 2023, "month": 0}) {
+  function getStats(data = {"year": 2024, "month": 0}) {
     setLoadingStats(true)
     axios.get(
       API_URL+"/stats", { params: {
@@ -75,20 +99,33 @@ export default function App() {
     })
   }
 
+  // sets up login process once google logged in
   function setupLogin(response) {
     const authorizationCode = response.code;
+    setLogin(false);
     
-    axios.post(
+    axios.get(
       API_URL+"/login",
-      { code: authorizationCode,
-        sheetName: sheetName,
-        worksheetTitle: worksheetTitle },
-      { headers: {'Content-Type': 'application/json'} },
+      { params: {code: authorizationCode}
+      },
     )
     .then((response) => {
       if(response.status == 200) {
-        setLogin(true);
-        getTxns();
+
+        const accessToken = response.data["access_token"]
+        const refreshToken = response.data["refresh_token"]
+
+        if(accessToken && refreshToken) {
+          // setAccessJwt(response.data["access_token"]);
+          // setRefreshJwt(response.data["refresh_token"]);
+          modifyTokens(response.data["access_token"], response.data["refresh_token"])
+
+          // getTxns();
+          setLogin(true);
+        } else {
+          console.log("Missing Access/Refresh Tokens")
+        }
+        
       }
     })
     .catch((error) => {
@@ -96,6 +133,9 @@ export default function App() {
       setLoginMessage("Sheet not found: check name/title")
     })
   }
+
+
+  // initiate login with google api
   const googleLogin = useGoogleLogin({
     onSuccess: (codeResponse) => {
       setupLogin(codeResponse);
@@ -115,10 +155,29 @@ export default function App() {
     }
   }
 
+  // only modify tokens when changed
+  function modifyTokens(access, refresh) {
+    if (access != accessJwt) {
+      console.log(access)
+      console.log(accessJwt)
+      setAccessJwt(access)
+    }
+    if (refresh != refreshJwt) {
+      setRefreshJwt(refresh)
+    }
+  }
+
 
   // const API_URL = "https://expense-tracker-85pc.onrender.com"
-  const API_URL = "https://test-expense-tracker-api.onrender.com"
-  // const API_URL = "http://localhost:5000"
+  // const API_URL = "https://test-expense-tracker-api.onrender.com"
+  const API_URL = "http://localhost:5000"
+
+  useEffect(() => {
+    // Only call getTxns() if both accessJwt and refreshJwt are defined
+    if (accessJwt !== undefined && refreshJwt !== undefined) {
+      getTxns();
+    }
+  }, [accessJwt, refreshJwt]); // This effect will re-run whenever accessJwt or refreshJwt change
 
   useEffect(() => getStatus(), []);
 
