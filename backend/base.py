@@ -70,8 +70,6 @@ def decode_jwt(token_jwt, token_type="access_token"):
     """
     try:
         result = jwt.decode(token_jwt, api.secret_key, algorithms=["HS256"])
-        print("RESULT")
-        print(result[token_type])
         return result[token_type]
     except jwt.exceptions.InvalidTokenError as e:
         print(e)
@@ -112,7 +110,7 @@ def establish_access(sheet_name, worksheet_title, access_token, refresh_token):
         try:
             verified_access_token = get_new_access_token(refresh_token)
         except Exception:
-            return "Reauth"
+            return "Reauthenticate"
 
     credentials = Credentials(
         client_id=CLIENT_ID,
@@ -122,13 +120,14 @@ def establish_access(sheet_name, worksheet_title, access_token, refresh_token):
         token=verified_access_token,
         refresh_token=refresh_token
     )
+
     try:
         c.connect_client(credentials, sheet_name, worksheet_title)
         return {
             "access_token": generate_jwt(verified_access_token, "access_token"),
             "refresh_token": generate_jwt(refresh_token, "refresh_token")
         }
-    except:
+    except Exception:
         return "Connection Unsuccessful", 500
 
 
@@ -169,24 +168,42 @@ def txns():
                 raise Exception("Failed to add new transaction")
 
     except Exception:
-        return "Reauth"
+        return "Reauthenticate"
 
 
 @api.route('/stats', methods=['GET'])
 def stats():
+    """
+    Retrieve transactions stats
+    """
     import crud as c
 
-    if request.method == "GET":
-        df = c.get_dataframe()
-        sum_filter = {
-            "year": int(request.args.get("year")),
-            "month": int(request.args.get("month")),
-        }
+    sheet_name = request.args.get("sheetName")
+    worksheet_title = request.args.get("worksheetTitle")
+    access_token = decode_jwt(request.args.get("accessJwt"), "access_token")
+    refresh_token = decode_jwt(request.args.get("refreshJwt"), "refresh_token")
 
-        try:
-            return json.dumps(c.get_all_stats(df, sum_filter))
-        except:
-            raise Exception("Failed to get stats")
+    try:
+        response = establish_access(sheet_name, worksheet_title, access_token, refresh_token)
+        if request.method == "GET":
+            df = c.get_dataframe()
+
+            sum_filter = {
+                "year": int(request.args.get("year")),
+                "month": int(request.args.get("month")),
+            }
+
+            try:
+                print(json.dumps(c.get_all_stats(df, sum_filter)))
+                return {
+                    "stats": json.dumps(c.get_all_stats(df, sum_filter)),
+                    "jwts": response
+                }
+            except:
+                raise Exception("Failed to get stats")
+
+    except Exception:
+        return "Reauthenticate"
 
 
 def get_new_access_token(refresh_token):
@@ -231,6 +248,9 @@ def exchange_auth_for_tokens(auth_code: str):
 
 
 def verify_access(access_token):
+    """
+    Verify whether access_token is valid
+    """
     verification_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
     if requests.get(verification_url, params={'access_token': access_token}).status_code == 200:
         return True

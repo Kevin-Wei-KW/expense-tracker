@@ -57,7 +57,8 @@ def connect_client(credentials, sheet_name, worksheet_title):
     global sheet
     sheet = sh.worksheet(worksheet_title)
 
-    setup_sheet()
+    if sheet is not None:
+        setup_sheet()
 
     return "Connected"
 
@@ -71,15 +72,13 @@ def setup_sheet():
 
     headers = ["Date", "Transaction", "Description", "Dr", "Cr"]
 
-    # Clear content and headers
+    # Clear content and headers if first line doesn't match
     if df.loc[0].values.tolist() != headers:
         sheet.clear()
         blank_df = pd.DataFrame([headers])
         blank_df.columns = blank_df.iloc[0]
         blank_df = blank_df.drop(blank_df.index[0])
         set_with_dataframe(sheet, blank_df)
-
-
 
 
 def get_dataframe() -> pd.DataFrame:

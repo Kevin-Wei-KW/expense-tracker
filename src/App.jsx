@@ -75,12 +75,18 @@ export default function App() {
       API_URL+"/stats", { params: {
         year: data["year"],
         month: data["month"],
+        sheetName: sheetName,
+        worksheetTitle: worksheetTitle,
+        accessJwt: accessJwt,
+        refreshJwt: refreshJwt,
       }}
     )
     .then((response) => {
-      const res = response.data
+      const stats = JSON.parse(response.data["stats"])
+      const jwts = JSON.parse(response.data["jwts"])
+
       setLoadingStats(false)
-      setStatsDict(res)
+      setStatsDict(stats)
     })
     .catch((error) => logError(error))
   }
@@ -158,8 +164,6 @@ export default function App() {
   // only modify tokens when changed
   function modifyTokens(access, refresh) {
     if (access != accessJwt) {
-      console.log(access)
-      console.log(accessJwt)
       setAccessJwt(access)
     }
     if (refresh != refreshJwt) {
