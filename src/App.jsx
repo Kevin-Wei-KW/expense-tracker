@@ -56,10 +56,13 @@ export default function App() {
     axios.post(
       API_URL+"/txns", {
         txn: data,
-        sheetName: sheetName,
-        worksheetTitle: worksheetTitle,
-        accessJwt: accessJwt,
-        refreshJwt: refreshJwt
+      },
+      { params: {
+          sheetName: sheetName,
+          worksheetTitle: worksheetTitle,
+          accessJwt: accessJwt,
+          refreshJwt: refreshJwt
+        }
       }
     )
     .then(() => {

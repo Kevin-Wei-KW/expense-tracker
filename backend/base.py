@@ -157,7 +157,8 @@ def txns():
                 raise Exception("Failed to get transactions")
 
         elif request.method == "POST":
-            data = body["txn"]
+            data = request.json.get("txn")
+            print(data)
             new_row = c.create_row(data)
             df = c.get_dataframe()
 
