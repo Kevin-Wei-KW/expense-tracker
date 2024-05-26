@@ -72,10 +72,8 @@ def decode_jwt(token_jwt, token_type="access_token"):
         result = jwt.decode(token_jwt, api.secret_key, algorithms=["HS256"])
         return result[token_type]
     except jwt.exceptions.InvalidTokenError as e:
-        print(e)
         return None
     except Exception as e:
-        print(e)
         return None
 
 
@@ -88,14 +86,11 @@ def login():
 
     try:
         tokens = exchange_auth_for_tokens(auth_code)
-        print("ACCESS:" + tokens["access_token"])
-        # print(tokens["refresh_token"])
         return {
             "access_token": generate_jwt(tokens["access_token"], "access_token"),
             "refresh_token": generate_jwt(tokens["refresh_token"], "refresh_token")
         }
     except Exception:
-        print("Login Authentication Failed")
         return "Login Authentication Failed"
 
 
@@ -158,7 +153,6 @@ def txns():
 
         elif request.method == "POST":
             data = request.json.get("txn")
-            print(data)
             new_row = c.create_row(data)
             df = c.get_dataframe()
 
@@ -195,7 +189,6 @@ def stats():
             }
 
             try:
-                print(json.dumps(c.get_all_stats(df, sum_filter)))
                 return {
                     "stats": json.dumps(c.get_all_stats(df, sum_filter)),
                     "jwts": response
@@ -259,24 +252,19 @@ def verify_access(access_token):
         return False
 
 
-def establish_session(auth_code):
-    verification_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
-
-    if ('access_token' in session and
-            requests.get(verification_url, params={'access_token': session['access_token']}).status_code == 200):
-        # print("valid token")
-        return True
-    elif 'refresh_token' in session:
-        session['access_token'] = get_new_access_token()
-        # print("refresh token")
-        print(session)
-        return True
-    elif auth_code:
-        # print("new token")
-        token_response = exchange_auth_for_tokens(auth_code)
-        session['access_token'] = token_response['access_token']
-        session['refresh_token'] = token_response['refresh_token']
-        print(session)
-        return True
-    else:
-        return False
+# def establish_session(auth_code):
+#     verification_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
+#
+#     if ('access_token' in session and
+#             requests.get(verification_url, params={'access_token': session['access_token']}).status_code == 200):
+#         return True
+#     elif 'refresh_token' in session:
+#         session['access_token'] = get_new_access_token()
+#         return True
+#     elif auth_code:
+#         token_response = exchange_auth_for_tokens(auth_code)
+#         session['access_token'] = token_response['access_token']
+#         session['refresh_token'] = token_response['refresh_token']
+#         return True
+#     else:
+#         return False
