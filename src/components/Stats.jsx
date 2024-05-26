@@ -33,7 +33,7 @@ export default function Stats(props) {
         await props.getStats(filter)
     }
 
-    useEffect(() => {getStats({"year": year, "month": month})}, [])
+    // useEffect(() => {getStats({"year": year, "month": month})}, [])
 
     return(
         <div className="Stats">

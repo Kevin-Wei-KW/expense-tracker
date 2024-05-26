@@ -71,7 +71,7 @@ export default function App() {
     .catch((error) => logError(error))
   }
 
-  function getStats(data = {"year": 2024, "month": 0}) {
+  function getStats(data = {"year": new Date().getFullYear(), "month": 0}) {
     setLoadingStats(true)
     axios.get(
       API_URL+"/stats",
@@ -185,6 +185,7 @@ export default function App() {
     // Only call getTxns() if both accessJwt and refreshJwt are defined
     if (accessJwt !== undefined && refreshJwt !== undefined) {
       getTxns();
+      getStats();
     }
   }, [accessJwt, refreshJwt]); // This effect will re-run whenever accessJwt or refreshJwt change
 
