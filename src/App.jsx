@@ -26,7 +26,6 @@ export default function App() {
 
   function getTxns() {
     setLoadingTxns(true)
-
     axios.get(
       API_URL+"/txns",
       { params: {
@@ -75,7 +74,8 @@ export default function App() {
   function getStats(data = {"year": 2024, "month": 0}) {
     setLoadingStats(true)
     axios.get(
-      API_URL+"/stats", { params: {
+      API_URL+"/stats",
+      { params: {
         year: data["year"],
         month: data["month"],
         sheetName: sheetName,
@@ -86,7 +86,7 @@ export default function App() {
     )
     .then((response) => {
       const stats = JSON.parse(response.data["stats"])
-      const jwts = JSON.parse(response.data["jwts"])
+      const jwts = response.data["jwts"]
 
       setLoadingStats(false)
       setStatsDict(stats)
@@ -161,6 +161,8 @@ export default function App() {
       console.log(error.response)
       console.log(error.response.status)
       console.log(error.response.headers)
+    } else {
+      console.log(error)
     }
   }
 

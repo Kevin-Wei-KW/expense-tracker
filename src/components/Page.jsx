@@ -15,7 +15,6 @@ export default function Page(props) {
         if (pageSelector === "AddTxn") {
             return <AddTxn setPage={()=>setPageSelector("Home")} pushTxns={props.pushTxns}/>;
         } else if(pageSelector === "Stats") {
-            console.log(props.stats)
             return <Stats stats={props.stats} getStats={props.getStats} loading={props.loadingStats}/>;
         } else {
             return <TxnList txns={props.txns} loading={props.loadingTxns}/>;
