@@ -54,6 +54,7 @@
     height: 60px;
     border-radius: 10px;
     background-color: #1A1A1A;
+    color: white !important;
 
     display: flex;
     justify-content: space-evenly;

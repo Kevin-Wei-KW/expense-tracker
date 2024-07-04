@@ -61,6 +61,7 @@
     height: 7vh;
     width: 60%;
     background-color: #36512B;
+    color: white !important;
 
     font-size: 22px;
     margin: 5vh;
@@ -74,6 +75,7 @@
     position: absolute;
     bottom: 5vh;
     font-size: 24px;
+    color: white !important;
 
     box-shadow: 0 0 10px gray;
 }
