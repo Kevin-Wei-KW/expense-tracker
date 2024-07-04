@@ -65,7 +65,7 @@
     font-size: 22px;
     margin: 5vh;
 }
-.login-btn:hover .login-btn:focus{
+.login-btn:hover{
     outline: 0;
     color: white;
 }
@@ -77,7 +77,7 @@
 
     box-shadow: 0 0 10px gray;
 }
-.tutorial-btn:hover .tutorial-btn:focus {
+.tutorial-btn:hover {
     color: white;
 }
 

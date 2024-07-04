@@ -50,6 +50,7 @@
 .nav-extra-button {
     margin: 10px;
     width: 70%;
+    max-width: 300px;
     height: 60px;
     border-radius: 10px;
     background-color: #1A1A1A;
