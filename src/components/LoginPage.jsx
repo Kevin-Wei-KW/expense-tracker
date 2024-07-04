@@ -18,11 +18,11 @@ export default function Page(props) {
             {showTutorial &&
             <div className="tutorial" onClick={() => setShowTutorial(false)}>
                 <h2>First Time Setup</h2>
-                <h3>Step 1:</h3>
+                <h3><u>Step 1</u>:</h3>
                 <span style={{display:"inline-block"}}>
                     Create a new Google Sheet.
                 </span>
-                <h3>Step 2:</h3>
+                <h3><u>Step 2</u>:</h3>
                 <span style={{display:"inline-block"}}>
                     Set a <b>worksheet title</b> (shown as tabs at bottom of page). <br/>
                     In the upper left cell, type: <b><u>replace</u></b>
@@ -32,12 +32,12 @@ export default function Page(props) {
                 <span style={{display:"inline-block"}}>
                     <b>Warning - contents of this worksheet will be overwritten.</b>
                 </span>
-                <h3>Step 3:</h3>
+                <h3><u>Step 3</u>:</h3>
                 <span style={{display:"inline-block"}}>
                     Copy the Google Sheet link (If on mobile, link is in the "Share" menu)
                     In the login page, enter Google Sheet link and Worksheet title, then login to your account.
                 </span>
-                <h3>Step 4:</h3>
+                <h3><u>Step 4</u>:</h3>
                 <span style={{display:"inline-block"}}>
                     Once logged in, your selected Google Sheet is automatically templated.
                 </span>

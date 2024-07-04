@@ -63,7 +63,6 @@ def extract_sheet_id(url):
 
 
 def connect_client(credentials, sheet_link, worksheet_title):
-    print(sheet_link)
     gc = gspread.authorize(credentials)
     sheet_key = extract_sheet_id(sheet_link)
     sh = gc.open_by_key(sheet_key)
