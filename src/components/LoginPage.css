@@ -64,6 +64,10 @@
     font-size: 22px;
     margin: 5vh;
 }
+.login-btn:hover .login-btn:focus{
+    outline: 0;
+    color: white;
+}
 
 .tutorial-btn {
     position: absolute;
@@ -71,6 +75,9 @@
     font-size: 24px;
 
     box-shadow: 0 0 10px gray;
+}
+.tutorial-btn:hover .tutorial-btn:focus {
+    color: white;
 }
 
 .tutorial {

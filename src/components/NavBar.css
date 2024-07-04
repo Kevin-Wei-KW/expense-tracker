@@ -58,7 +58,7 @@
     align-items: center;
 }
 
-.nav-extra-button:hover .nav-extra-button:active{
+.nav-extra-button:hover .nav-extra-button:focus{
     cursor: pointer;
     color: white;
 }
