@@ -24,16 +24,17 @@ export default function Page(props) {
                 </span>
                 <h3>Step 2:</h3>
                 <span style={{display:"inline-block"}}>
-                    Take note of <b>Google Sheet name</b> and a <b><u>blank</u> worksheet title</b> (shown as tabs at bottom of page).
+                    Set a <b>Google Sheet name</b> and a <b>worksheet title</b> (shown as tabs at bottom of page). <br/>
+                    In the upper left cell, type: <b><u>replace</u></b>
                 </span>
                 <br/>
                 <br/>
                 <span style={{display:"inline-block"}}>
-                    <b>Warning - contents of selected worksheet will be overwritten.</b>
+                    <b>Warning - contents of this worksheet will be overwritten.</b>
                 </span>
                 <h3>Step 3:</h3>
                 <span style={{display:"inline-block"}}>
-                    Enter Google Sheet name and title, then login to your account.
+                    In the Expense Tracker login page, enter Google Sheet name and title, then login to your account.
                 </span>
                 <h3>Step 4:</h3>
                 <span style={{display:"inline-block"}}>

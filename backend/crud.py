@@ -72,8 +72,7 @@ def setup_sheet():
 
     headers = ["Date", "Transaction", "Description", "Dr", "Cr"]
 
-    # Clear content and headers if first line doesn't match
-    if df.loc[0].values.tolist() != headers:
+    if df.loc[0].values.tolist()[0].lower() == "replace":
         sheet.clear()
         blank_df = pd.DataFrame([headers])
         blank_df.columns = blank_df.iloc[0]
