@@ -161,7 +161,7 @@ def txns():
                 raise Exception("Failed to add new transaction")
 
     except Exception:
-        return "Reauthenticate"
+        return "Reauthenticate", 403
 
 
 @api.route('/stats', methods=['GET'])

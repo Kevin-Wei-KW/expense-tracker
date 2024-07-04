@@ -42,15 +42,17 @@ export default function App() {
       const txns = response.data["txns"]
       const jwts = response.data["jwts"]
 
-      // setAccessJwt(jwts["access_token"])
-      // setRefreshJwt(jwts["refresh_token"])
-      // modifyTokens(jwts["access_token"], jwts["refresh_token"])
-
-
       setLoadingTxns(false)
       setTxnDataList([...txns])
     })
-    .catch((error) => logError(error))
+    .catch((error) => {
+      console.log(error)
+      if(error.response.status === 403) {
+        // Handle Access Denied, Reauthenticate
+        setLogin(false);
+      }
+      logError(error)
+    })
   }
 
   function pushTxns(data) {
@@ -128,7 +130,7 @@ export default function App() {
   // sets up login process once google logged in
   function setupLogin(response) {
     const authorizationCode = response.code;
-    
+
     axios.get(
       API_URL+"/login",
       { params: {code: authorizationCode}
@@ -174,11 +176,7 @@ export default function App() {
 
   function logError(error) {
     if (error.response) {
-      console.log(error.response)
       console.log(error.response.status)
-      console.log(error.response.headers)
-    } else {
-      console.log(error)
     }
   }
 
@@ -186,11 +184,11 @@ export default function App() {
   function modifyTokens(access, refresh) {
     if (access != accessJwt) {
       setAccessJwt(access)
-      setCookie('accessToken', access, { path: '/', maxAge: 3600 }); // access token expires in 1 hour
+      setCookie('accessToken', access, { path: '/', maxAge: 3600, secure: true, sameSite: 'strict' }); // access token expires in 1 hour
     }
     if (refresh != refreshJwt) {
       setRefreshJwt(refresh)
-      setCookie('refreshToken', refresh, { path: '/', maxAge: 2592000 }); // refresh token expires in 30 days
+      setCookie('refreshToken', refresh, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // refresh token expires in 30 days
     }
   }
 
