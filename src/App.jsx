@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from "axios";
 import './App.css'
+import { CookiesProvider, useCookies } from 'react-cookie'
 
 import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 
@@ -23,6 +24,7 @@ export default function App() {
 
   const [accessJwt, setAccessJwt] = useState()
   const [refreshJwt, setRefreshJwt] = useState()
+  const [cookies, setCookie, removeCookie] = useCookies(['jwtToken']);
 
   function getTxns() {
     setLoadingTxns(true)
@@ -95,6 +97,10 @@ export default function App() {
   }
 
   function getStatus() {
+    if(cookiesLogin()) {
+      return
+    }
+
     axios.get(
       API_URL+"/status"
     )
@@ -108,10 +114,20 @@ export default function App() {
     })
   }
 
+  function cookiesLogin() {
+    // use cookies tokens if possible
+    if (cookies.accessToken && cookies.refreshToken) {
+      modifyTokens(cookies.accessToken, cookies.refreshToken);
+      setLogin(true);
+      return true
+    }
+
+    return false
+  }
+
   // sets up login process once google logged in
   function setupLogin(response) {
     const authorizationCode = response.code;
-    setLogin(false);
     
     axios.get(
       API_URL+"/login",
@@ -170,9 +186,11 @@ export default function App() {
   function modifyTokens(access, refresh) {
     if (access != accessJwt) {
       setAccessJwt(access)
+      setCookie('accessToken', access, { path: '/', maxAge: 3600 }); // access token expires in 1 hour
     }
     if (refresh != refreshJwt) {
       setRefreshJwt(refresh)
+      setCookie('refreshToken', refresh, { path: '/', maxAge: 2592000 }); // refresh token expires in 30 days
     }
   }
 

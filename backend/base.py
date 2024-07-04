@@ -52,9 +52,9 @@ def generate_jwt(value, token_type="access_token"):
     """
     expiration = datetime.utcnow()
     if token_type == "access_token":
-        expiration += timedelta(minutes=15)
+        expiration += timedelta(minutes=60)
     else:
-        expiration += timedelta(days=7)
+        expiration += timedelta(days=30)
 
     payload = {
         token_type: value,
@@ -79,9 +79,7 @@ def decode_jwt(token_jwt, token_type="access_token"):
 
 @api.route('/login', methods=['GET'])
 def login():
-    import crud as c
 
-    # body = request.get_json()
     auth_code = request.args.get("code")
 
     try:
@@ -234,7 +232,6 @@ def exchange_auth_for_tokens(auth_code: str):
     }
 
     response = requests.post(TOKEN_ENDPOINT, headers=headers, data=payload)
-
     if response.status_code == 200:
         return response.json()
     else:
