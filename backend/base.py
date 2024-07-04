@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 import flask
 from flask import Flask, request, jsonify, redirect, session
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import sys, os
 import jwt
 
@@ -18,15 +18,18 @@ sys.path.append(os.getcwd())
 
 api = flask.Flask(__name__)
 api.permanent_session_lifetime = timedelta(days=7)
-api.config['SESSION_COOKIE_NAME'] = 'expense_tracker'  # set cookie name
-
-CORS(api, supports_credentials=True)
+api.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
 
 load_dotenv()
 CLIENT_ID = os.environ.get('CLIENT_ID')
 CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 REDIRECT_URI = os.environ.get('REDIRECT_URI')
 api.secret_key = os.environ.get('SECRET_KEY')
+FRONTEND = os.environ.get('FRONTEND')
+
+CORS(api, supports_credentials=True, resources={r"/*": {"origins": FRONTEND}})
+
+
 
 TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token'
 REFRESH_GRANT = 'refresh_token'
