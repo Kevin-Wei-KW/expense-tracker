@@ -58,8 +58,9 @@
     align-items: center;
 }
 
-.nav-extra-button:hover {
-    cursor: pointer
+.nav-extra-button:hover .nav-extra-button:active{
+    cursor: pointer;
+    color: white;
 }
 
 
