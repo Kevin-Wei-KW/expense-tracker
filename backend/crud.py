@@ -71,9 +71,11 @@ def connect_client(credentials, sheet_link, worksheet_title):
     sheet = sh.worksheet(worksheet_title)
 
     if sheet is not None:
-        setup_sheet()
-
-    return "Connected"
+        try:
+            setup_sheet()
+            return "Connected"
+        except:
+            raise Exception("Connection failed during setup, check instructions.")
 
 
 def setup_sheet():
@@ -91,6 +93,8 @@ def setup_sheet():
         blank_df.columns = blank_df.iloc[0]
         blank_df = blank_df.drop(blank_df.index[0])
         set_with_dataframe(sheet, blank_df)
+    elif df.loc[0].values.tolist() != headers:
+        raise Exception("Please check setup instructions.")
 
 
 def get_dataframe() -> pd.DataFrame:
