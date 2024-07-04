@@ -9,7 +9,7 @@ export default function Page(props) {
     return(
         <div className="LoginPage">
             <h2 className="message">{props.loginMessage}</h2>
-            <input className="sheet-input" placeholder="Google Sheet Name" type="text" name="file-name" onChange={(e) => props.setSheetName(e.target.value)}/>
+            <input className="sheet-input" placeholder="Google Sheet Link" type="text" name="file-link" onChange={(e) => props.setSheetLink(e.target.value)}/>
             <input className="worksheet-input" placeholder="Worksheet Title" type="text" name="worksheet-name" onChange={(e) => props.setWorksheetTitle(e.target.value)}/>
             <button className="login-btn" type="button" onClick={props.login}>Login</button>
 
@@ -24,7 +24,7 @@ export default function Page(props) {
                 </span>
                 <h3>Step 2:</h3>
                 <span style={{display:"inline-block"}}>
-                    Set a <b>Google Sheet name</b> and a <b>worksheet title</b> (shown as tabs at bottom of page). <br/>
+                    Set a <b>worksheet title</b> (shown as tabs at bottom of page). <br/>
                     In the upper left cell, type: <b><u>replace</u></b>
                 </span>
                 <br/>
@@ -34,7 +34,8 @@ export default function Page(props) {
                 </span>
                 <h3>Step 3:</h3>
                 <span style={{display:"inline-block"}}>
-                    In the Expense Tracker login page, enter Google Sheet name and title, then login to your account.
+                    Copy the Google Sheet link (If on mobile, link is in the "Share" menu)
+                    In the login page, enter Google Sheet link and Worksheet title, then login to your account.
                 </span>
                 <h3>Step 4:</h3>
                 <span style={{display:"inline-block"}}>

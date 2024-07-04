@@ -92,10 +92,10 @@ def login():
         return "Login Authentication Failed"
 
 
-def establish_access(sheet_name, worksheet_title, access_token, refresh_token):
+def establish_access(sheet_link, worksheet_title, access_token, refresh_token):
     import crud as c
 
-    scopes = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", 'https://spreadsheets.google.com/feeds']
 
     # token_valid = verify_access(access_token)
     verified_access_token = access_token
@@ -115,7 +115,7 @@ def establish_access(sheet_name, worksheet_title, access_token, refresh_token):
     )
 
     try:
-        c.connect_client(credentials, sheet_name, worksheet_title)
+        c.connect_client(credentials, sheet_link, worksheet_title)
         return {
             "access_token": generate_jwt(verified_access_token, "access_token"),
             "refresh_token": generate_jwt(refresh_token, "refresh_token")
@@ -131,13 +131,13 @@ def txns():
     """
     import crud as c
 
-    sheet_name = request.args.get("sheetName")
+    sheet_link = request.args.get("sheetLink")
     worksheet_title = request.args.get("worksheetTitle")
     access_token = decode_jwt(request.args.get("accessJwt"), "access_token")
     refresh_token = decode_jwt(request.args.get("refreshJwt"), "refresh_token")
 
     try:
-        response = establish_access(sheet_name, worksheet_title, access_token, refresh_token)
+        response = establish_access(sheet_link, worksheet_title, access_token, refresh_token)
         if request.method == "GET":
             df = c.get_dataframe()
 
@@ -161,7 +161,7 @@ def txns():
                 raise Exception("Failed to add new transaction")
 
     except Exception:
-        return "Reauthenticate", 403
+        return "Reauthenticate (txn)", 403
 
 
 @api.route('/stats', methods=['GET'])
@@ -171,13 +171,13 @@ def stats():
     """
     import crud as c
 
-    sheet_name = request.args.get("sheetName")
+    sheet_link = request.args.get("sheetLink")
     worksheet_title = request.args.get("worksheetTitle")
     access_token = decode_jwt(request.args.get("accessJwt"), "access_token")
     refresh_token = decode_jwt(request.args.get("refreshJwt"), "refresh_token")
 
     try:
-        response = establish_access(sheet_name, worksheet_title, access_token, refresh_token)
+        response = establish_access(sheet_link, worksheet_title, access_token, refresh_token)
         if request.method == "GET":
             df = c.get_dataframe()
 
@@ -195,7 +195,7 @@ def stats():
                 raise Exception("Failed to get stats")
 
     except Exception:
-        return "Reauthenticate"
+        return "Reauthenticate (stats)"
 
 
 def get_new_access_token(refresh_token):

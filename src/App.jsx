@@ -19,8 +19,8 @@ export default function App() {
   const [loginMessage, setLoginMessage] = useState("Connect to Google Drive")
   const [login, setLogin] = useState(false)
   const [loginError, setLoginError] = useState(false)
-  const [sheetName, setSheetName] = useState()
   const [worksheetTitle, setWorksheetTitle] = useState()
+  const [sheetLink, setSheetLink] = useState()
 
   const [accessJwt, setAccessJwt] = useState()
   const [refreshJwt, setRefreshJwt] = useState()
@@ -31,7 +31,7 @@ export default function App() {
     axios.get(
       API_URL+"/txns",
       { params: {
-        sheetName: sheetName,
+        sheetLink: sheetLink,
         worksheetTitle: worksheetTitle,
         accessJwt: accessJwt,
         refreshJwt: refreshJwt,
@@ -61,7 +61,7 @@ export default function App() {
         txn: data,
       },
       { params: {
-          sheetName: sheetName,
+          sheetLink, sheetLink,
           worksheetTitle: worksheetTitle,
           accessJwt: accessJwt,
           refreshJwt: refreshJwt
@@ -82,7 +82,7 @@ export default function App() {
       { params: {
         year: data["year"],
         month: data["month"],
-        sheetName: sheetName,
+        sheetLink: sheetLink,
         worksheetTitle: worksheetTitle,
         accessJwt: accessJwt,
         refreshJwt: refreshJwt,
@@ -118,8 +118,10 @@ export default function App() {
 
   function cookiesLogin() {
     // use cookies tokens if possible
-    if (cookies.accessToken && cookies.refreshToken) {
+    if (cookies.accessToken && cookies.refreshToken && cookies.sheetLink && cookies.worksheetTitle) {
       modifyTokens(cookies.accessToken, cookies.refreshToken);
+      setSheetLink(cookies.sheetLink)
+      setWorksheetTitle(cookies.worksheetTitle)
       setLogin(true);
       return true
     }
@@ -147,6 +149,9 @@ export default function App() {
           // setRefreshJwt(response.data["refresh_token"]);
           modifyTokens(response.data["access_token"], response.data["refresh_token"])
 
+          setCookie('sheetLink', sheetLink, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // sheetlink expires in 30 days
+          setCookie('worksheetTitle', worksheetTitle, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // worksheet title expires in 30 days
+
           // getTxns();
           setLogin(true);
         } else {
@@ -171,7 +176,7 @@ export default function App() {
       console.log("error");
     },
     flow: 'auth-code',
-    scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.readonly"
+    scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file"
   })
 
   function logError(error) {
@@ -218,7 +223,7 @@ export default function App() {
       {!login &&
       <LoginPage
         loginMessage={loginMessage}
-        setSheetName={setSheetName}
+        setSheetLink={setSheetLink}
         setWorksheetTitle={setWorksheetTitle}
         login={googleLogin}
       />

@@ -49,10 +49,24 @@ test_txn: txn_dict_format = {
 sheet: Worksheet = None
 
 
-def connect_client(credentials, sheet_name, worksheet_title):
+def extract_sheet_id(url):
+    # Split the URL by '/' and find the index of 'd'
+    parts = url.split('/')
+    try:
+        # The ID is always after 'd'
+        d_index = parts.index('d')
+        # Return the part immediately after 'd', which is the ID
+        return parts[d_index + 1]
+    except (ValueError, IndexError):
+        # Return None if 'd' is not found or the ID is not present
+        return None
 
+
+def connect_client(credentials, sheet_link, worksheet_title):
+    print(sheet_link)
     gc = gspread.authorize(credentials)
-    sh = gc.open(sheet_name)
+    sheet_key = extract_sheet_id(sheet_link)
+    sh = gc.open_by_key(sheet_key)
 
     global sheet
     sheet = sh.worksheet(worksheet_title)
