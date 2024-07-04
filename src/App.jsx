@@ -24,7 +24,7 @@ export default function App() {
 
   const [accessJwt, setAccessJwt] = useState()
   const [refreshJwt, setRefreshJwt] = useState()
-  const [cookies, setCookie, removeCookie] = useCookies(['jwtToken']);
+  const [cookies, setCookie, removeCookie] = useCookies();
 
   function getTxns() {
     setLoadingTxns(true)
@@ -166,6 +166,22 @@ export default function App() {
     })
   }
 
+  function logout() {
+    removeCookie('sheetLink', { path: '/' });
+    removeCookie('worksheetTitle', { path: '/' });
+    removeCookie('accessToken', { path: '/' });
+    removeCookie('refreshToken', { path: '/' });
+
+    setLogin(false)
+    setAccessJwt(null)
+    setRefreshJwt(null)
+
+    setTxnDataList([])
+    setLoadingTxns(false)
+    setStatsDict({})
+    setLoadingStats(false)
+  }
+
 
   // initiate login with google api
   const googleLogin = useGoogleLogin({
@@ -238,6 +254,7 @@ export default function App() {
         pushTxns={pushTxns} 
         loadingStats={loadingStats} 
         loadingTxns={loadingTxns}
+        logout={logout}
       />}
 
       {!login && loginError &&
