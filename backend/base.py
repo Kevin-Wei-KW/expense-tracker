@@ -95,6 +95,17 @@ def login():
         return "Login Authentication Failed"
 
 
+@api.route('/new_access', methods=['GET'])
+def new_access():
+    sheet_link = request.args.get("sheetLink")
+    worksheet_title = request.args.get("worksheetTitle")
+    refresh_token = decode_jwt(request.args.get("refreshJwt"), "refresh_token")
+
+    response = establish_access(sheet_link, worksheet_title, "", refresh_token)
+
+    return response
+
+
 def establish_access(sheet_link, worksheet_title, access_token, refresh_token):
     import crud as c
 
@@ -102,11 +113,11 @@ def establish_access(sheet_link, worksheet_title, access_token, refresh_token):
 
     # token_valid = verify_access(access_token)
     verified_access_token = access_token
-    if not verify_access(access_token):
+    if not access_token or not verify_access(access_token):
         try:
             verified_access_token = get_new_access_token(refresh_token)
         except Exception:
-            return "Reauthenticate"
+            return "Reauthenticate", 403
 
     credentials = Credentials(
         client_id=CLIENT_ID,
@@ -122,9 +133,9 @@ def establish_access(sheet_link, worksheet_title, access_token, refresh_token):
         return {
             "access_token": generate_jwt(verified_access_token, "access_token"),
             "refresh_token": generate_jwt(refresh_token, "refresh_token")
-        }
+        }, 200
     except Exception:
-        return "Connection Unsuccessful", 500
+        return "Connection Unsuccessful", 403
 
 
 @api.route('/txns', methods=['GET', 'POST'])

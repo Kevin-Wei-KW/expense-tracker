@@ -44,12 +44,14 @@ export default function App() {
 
       setLoadingTxns(false)
       setTxnDataList([...txns])
+      modifyTokens(jwts["access_token"], jwts["refresh_token"])
     })
     .catch((error) => {
       console.log(error)
       if(error.response.status === 403) {
         // Handle Access Denied, Reauthenticate
-        setLogin(false);
+        logout()
+        // setLogin(false);
       }
       logError(error)
     })
@@ -68,7 +70,10 @@ export default function App() {
         }
       }
     )
-    .then(() => {
+    .then((response) => {
+
+      modifyTokens(response.data["access_token"], response.data["refresh_token"])
+
       getTxns()
       getStats()
     })
@@ -94,6 +99,7 @@ export default function App() {
 
       setLoadingStats(false)
       setStatsDict(stats)
+      modifyTokens(jwts["access_token"], jwts["refresh_token"])
     })
     .catch((error) => logError(error))
   }
@@ -109,7 +115,7 @@ export default function App() {
     .then((response) => {
       const res = response.data
       if(res == "login") {
-        setLogin(false);
+        logout();
       } else {
         setLogin(true);
       }
@@ -118,11 +124,28 @@ export default function App() {
 
   function cookiesLogin() {
     // use cookies tokens if possible
-    if (cookies.accessToken && cookies.refreshToken && cookies.sheetLink && cookies.worksheetTitle) {
+    if ((cookies.accessToken || cookies.refreshToken) && cookies.sheetLink && cookies.worksheetTitle) {
       modifyTokens(cookies.accessToken, cookies.refreshToken);
       setSheetLink(cookies.sheetLink)
       setWorksheetTitle(cookies.worksheetTitle)
       setLogin(true);
+
+      if (!cookies.accessToken) {
+        axios.get(
+          API_URL+"/new_access",
+          { params: {
+            sheetLink: cookies.sheetLink,
+            worksheetTitle: cookies.worksheetTitle,
+            refreshJwt: cookies.refreshToken,
+          }}
+        )
+        .then((response) => {
+          modifyTokens(response.data["access_token"], cookies.refreshToken)
+        })
+        .catch((error) => {
+          logError(error)
+        })
+      }
       return true
     }
 
@@ -203,11 +226,11 @@ export default function App() {
 
   // only modify tokens when changed
   function modifyTokens(access, refresh) {
-    if (access != accessJwt) {
+    if (access && access != accessJwt) {
       setAccessJwt(access)
       setCookie('accessToken', access, { path: '/', maxAge: 3600, secure: true, sameSite: 'strict' }); // access token expires in 1 hour
     }
-    if (refresh != refreshJwt) {
+    if (refresh && refresh != refreshJwt) {
       setRefreshJwt(refresh)
       setCookie('refreshToken', refresh, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // refresh token expires in 30 days
     }
@@ -218,7 +241,7 @@ export default function App() {
 
   useEffect(() => {
     // Only call getTxns() if both accessJwt and refreshJwt are defined
-    if (accessJwt !== undefined && refreshJwt !== undefined) {
+    if (accessJwt !== undefined || refreshJwt !== undefined) {
       getTxns();
       getStats();
     }
