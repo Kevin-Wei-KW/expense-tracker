@@ -152,6 +152,7 @@ def txns():
 
     try:
         response = establish_access(sheet_link, worksheet_title, access_token, refresh_token)
+
         if request.method == "GET":
             df = c.get_dataframe()
 

@@ -27,6 +27,7 @@ export default function App() {
   const [cookies, setCookie, removeCookie] = useCookies();
 
   function getTxns() {
+    console.log(worksheetTitle)
     setLoadingTxns(true)
     axios.get(
       API_URL+"/txns",
@@ -41,6 +42,12 @@ export default function App() {
     .then((response) => {
       const txns = response.data["txns"]
       const jwts = response.data["jwts"]
+      const status = response.data["jwts"][1]
+      
+      if (status !== 200) {
+        logout();
+      }
+
 
       setLoadingTxns(false)
       setTxnDataList([...txns])
@@ -64,7 +71,7 @@ export default function App() {
         txn: data,
       },
       { params: {
-          sheetLink, sheetLink,
+          sheetLink: sheetLink,
           worksheetTitle: worksheetTitle,
           accessJwt: accessJwt,
           refreshJwt: refreshJwt
@@ -100,7 +107,6 @@ export default function App() {
 
       setLoadingStats(false)
       setStatsDict(stats)
-      modifyTokens(jwts["access_token"], jwts["refresh_token"])
     })
     .catch((error) => logError(error))
   }
@@ -246,7 +252,7 @@ export default function App() {
       getTxns();
       getStats();
     }
-  }, [accessJwt, refreshJwt]); // This effect will re-run whenever accessJwt or refreshJwt change
+  }, [refreshJwt]); // This effect will re-run whenever accessJwt or refreshJwt change
 
   useEffect(() => getStatus(), []);
 
