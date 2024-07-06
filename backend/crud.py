@@ -1,14 +1,12 @@
 from datetime import datetime
+
 import pandas as pd
 import gspread
+
+from gspread import Worksheet
 from gspread_dataframe import set_with_dataframe
-from oauth2client.service_account import ServiceAccountCredentials
 
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-
-creds = ServiceAccountCredentials.from_json_keyfile_name('expensetracker.json', scope)
-
-client = gspread.authorize(creds)
+scopes = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
 header_name = {
     "date": "Date",
@@ -20,7 +18,7 @@ header_name = {
 
 type_name = {
     "food": "Food",
-    "rec": "Rec",
+    "recreation": "Recreation",
     "school": "School",
     "misc": "Misc",
     "grocery": "Grocery",
@@ -48,8 +46,55 @@ test_txn: txn_dict_format = {
 # Setup
 #
 
-TARGET_SHEET = "Personal Expenses"
-TARGET_WORKSHEET = "Txns"
+sheet: Worksheet = None
+
+
+def extract_sheet_id(url):
+    # Split the URL by '/' and find the index of 'd'
+    parts = url.split('/')
+    try:
+        # The ID is always after 'd'
+        d_index = parts.index('d')
+        # Return the part immediately after 'd', which is the ID
+        return parts[d_index + 1]
+    except (ValueError, IndexError):
+        # Return None if 'd' is not found or the ID is not present
+        return None
+
+
+def connect_client(credentials, sheet_link, worksheet_title):
+    gc = gspread.authorize(credentials)
+    sheet_key = extract_sheet_id(sheet_link)
+    sh = gc.open_by_key(sheet_key)
+
+    global sheet
+    sheet = sh.worksheet(worksheet_title)
+
+    if sheet is not None:
+        try:
+            setup_sheet()
+            return "Connected"
+        except:
+            raise Exception("Connection failed during setup, check instructions.")
+
+
+def setup_sheet():
+    """
+    Sets up a new spreadsheet
+    """
+
+    df = pd.DataFrame(sheet.get_all_values())
+
+    headers = ["Date", "Transaction", "Description", "Dr", "Cr"]
+
+    if df.loc[0].values.tolist()[0].lower() == "replace":
+        sheet.clear()
+        blank_df = pd.DataFrame([headers])
+        blank_df.columns = blank_df.iloc[0]
+        blank_df = blank_df.drop(blank_df.index[0])
+        set_with_dataframe(sheet, blank_df)
+    elif df.loc[0].values.tolist() != headers:
+        raise Exception("Please check setup instructions.")
 
 
 def get_dataframe() -> pd.DataFrame:
@@ -57,7 +102,6 @@ def get_dataframe() -> pd.DataFrame:
     Retrieve dataframe from spreadsheet
     :return: pandas dataframe object
     """
-    sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
 
     df = pd.DataFrame(sheet.get_all_values())
     df.columns = df.iloc[0]
@@ -120,17 +164,16 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame):
     :param df: the dataframe
     :return: nothing
     """
-    sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
 
     # track dates
-    prev_date = datetime.strptime(df.loc[len(df)]["Date"], "%Y-%m-%d")
+    prev_date = datetime.strptime(df.loc[len(df)]["Date"], "%Y-%m-%d") if len(df) > 1 else None
     cur_date = datetime.strptime(row[0], "%Y-%m-%d")
 
     # insert new row
     df.loc[len(df)+1] = row
 
     # sort if new transaction has earlier date
-    if cur_date < prev_date:
+    if prev_date is not None and cur_date < prev_date:
         df = df.sort_values(df.columns[0])  # sort first column (date)
 
     set_with_dataframe(sheet, df)
@@ -193,7 +236,7 @@ def get_all_stats(df: pd.DataFrame,
     """
 
     stats: dict[str, float] = {"Food": get_column_sum(df, True, "Food", cur_filter),
-                               "Rec": get_column_sum(df, True, "Rec", cur_filter),
+                               "Recreation": get_column_sum(df, True, "Recreation", cur_filter),
                                "School": get_column_sum(df, True, "School", cur_filter),
                                "Misc": get_column_sum(df, True, "Misc", cur_filter),
                                "Grocery": get_column_sum(df, True, "Grocery", cur_filter),

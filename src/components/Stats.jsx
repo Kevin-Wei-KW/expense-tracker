@@ -20,7 +20,7 @@ export default function Stats(props) {
     const monthMap = ["All", "January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
     function getCr() {
-        return props.stats["Food"] + props.stats["Grocery"] + props.stats["School"] + props.stats["Rec"] + props.stats["Misc"] + props.stats["Housing"];
+        return props.stats["Food"] + props.stats["Grocery"] + props.stats["School"] + props.stats["Recreation"] + props.stats["Misc"] + props.stats["Housing"];
     }
 
     function getDr() {
@@ -33,7 +33,7 @@ export default function Stats(props) {
         await props.getStats(filter)
     }
 
-    useEffect(() => {getStats({"year": year, "month": month})}, [])
+    // useEffect(() => {getStats({"year": year, "month": month})}, [])
 
     return(
         <div className="Stats">
@@ -62,7 +62,7 @@ export default function Stats(props) {
             {!props.loading ? 
                 <div className="stat-row">
                     <StatBox type="School" value={-props.stats["School"]}/>
-                    <StatBox type="Rec" value={-props.stats["Rec"]}/>
+                    <StatBox type="Recreation" value={-props.stats["Recreation"]}/>
                 </div> : ""
             }
             {!props.loading ? 

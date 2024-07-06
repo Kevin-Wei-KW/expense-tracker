@@ -5,11 +5,14 @@ import "./LoadingSpinner.css"
 import TxnBox from "./containers/TxnBox.jsx";
 
 export default function TxnList(props) {
-
     return(
         <div className="TxnList">
-
-            {!props.loading && props.txns.map((t, i) =>
+            {!props.loading && props.txns.length === 0 &&
+                <div className="empty-txns">
+                    No Transactions Yet
+                </div>
+            }
+            {!props.loading && props.txns && props.txns.map((t, i) =>
                 <TxnBox key={t.txn+t.date+t.desc+t.cr} type={t.txn} date={t.date} details={t.desc} value={t.cr != 0? -t.cr:t.dr}/>
             )}
             {props.loading &&
