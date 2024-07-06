@@ -51,6 +51,7 @@ export default function App() {
       if(error.response.status === 403) {
         // Handle Access Denied, Reauthenticate
         logout()
+        setLoginMessage("Access Denied: Please Check Login Info")
         // setLogin(false);
       }
       logError(error)
