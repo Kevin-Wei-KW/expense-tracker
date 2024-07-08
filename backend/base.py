@@ -30,7 +30,6 @@ FRONTEND = os.environ.get('FRONTEND')
 CORS(api, supports_credentials=True, resources={r"/*": {"origins": FRONTEND}})
 
 
-
 TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token'
 REFRESH_GRANT = 'refresh_token'
 AUTH_GRANT = 'authorization_code'
@@ -262,21 +261,3 @@ def verify_access(access_token):
         return True
     else:
         return False
-
-
-# def establish_session(auth_code):
-#     verification_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
-#
-#     if ('access_token' in session and
-#             requests.get(verification_url, params={'access_token': session['access_token']}).status_code == 200):
-#         return True
-#     elif 'refresh_token' in session:
-#         session['access_token'] = get_new_access_token()
-#         return True
-#     elif auth_code:
-#         token_response = exchange_auth_for_tokens(auth_code)
-#         session['access_token'] = token_response['access_token']
-#         session['refresh_token'] = token_response['refresh_token']
-#         return True
-#     else:
-#         return False

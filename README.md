@@ -1,11 +1,12 @@
 # Expense Tracker
 A web application designed for the phone, aiming to make tracking expenses easy and compatible with Google spreadsheets.
 
-For demo: [https://expense-tracker-web-demo.onrender.com](https://expense-tracker-web-demo.onrender.com/)
+The App: [https://expense-tracker-web-1ge1.onrender.com](https://expense-tracker-web-1ge1.onrender.com)
+<br/>Check out [iOS Setup](#ios-device-setup)
 
-*Initial loading may take a minute for Demo server to boot up.
+For Login-less Demo: [https://expense-tracker-web-demo.onrender.com](https://expense-tracker-web-demo.onrender.com/)
+<br/>*This server will take a minute to spin up
 
-*Check out [iOS Setup](#ios-device-setup)
 
 ***
 ## What does it do?
@@ -25,6 +26,8 @@ For demo: [https://expense-tracker-web-demo.onrender.com](https://expense-tracke
 3. Press the "Share" button <img src="public/share-btn.png" alt="drawing" width="16"/>  
 4. Select the "Add to Home Screen"
 5. Find your App on your Home Screen, and it's all done!
+
+<img src="./public/ios_demo.gif" width="190" height="400">
 
 ***
 ## Config

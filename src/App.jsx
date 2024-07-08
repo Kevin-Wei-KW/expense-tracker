@@ -16,7 +16,7 @@ export default function App() {
   const [statsDict, setStatsDict] = useState({})
   const [loadingStats, setLoadingStats] = useState(false)
 
-  const [loginMessage, setLoginMessage] = useState("Connect to Google Drive")
+  const [loginMessage, setLoginMessage] = useState("Connect to Google Sheet")
   const [login, setLogin] = useState(false)
   const [loginError, setLoginError] = useState(false)
   const [worksheetTitle, setWorksheetTitle] = useState()
@@ -202,7 +202,6 @@ export default function App() {
     removeCookie('accessToken', { path: '/' });
     removeCookie('refreshToken', { path: '/' });
 
-    setLogin(false)
     setAccessJwt(null)
     setRefreshJwt(null)
 
@@ -210,6 +209,8 @@ export default function App() {
     setLoadingTxns(false)
     setStatsDict({})
     setLoadingStats(false)
+
+    setLogin(false)
   }
 
 
@@ -258,13 +259,6 @@ export default function App() {
 
   return (
     <div className="App">
-      {/* {!login && 
-      <GoogleLogin
-        onSuccess={(credentialResponse) => setupLogin(credentialResponse)}
-        onError={() => setLoginError(true)}
-        useOneTap
-        flow="auth-code"
-      />} */}
 
       {!login &&
       <LoginPage
@@ -292,16 +286,6 @@ export default function App() {
         ERROR! Try logging in again.
       </div>
       }
-
-      {/* <Page
-        txns={txnDataList}
-        stats={statsDict}
-        getTxns={getTxns}
-        getStats={getStats}
-        pushTxns={pushTxns} 
-        loadingStats={loadingStats} 
-        loadingTxns={loadingTxns}
-      /> */}
     </div>
   );
 }
