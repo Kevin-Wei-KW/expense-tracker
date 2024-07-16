@@ -13,7 +13,20 @@ export default function TxnList(props) {
                 </div>
             }
             {!props.loading && props.txns && props.txns.map((t, i) =>
-                <TxnBox key={t.txn+t.date+t.desc+t.cr} type={t.txn} date={t.date} details={t.desc} value={t.cr != 0? -t.cr:t.dr}/>
+                <TxnBox
+                    key={t.txn+t.date+t.desc+t.cr}
+                    type={t.txn} date={t.date}
+                    details={t.desc}
+                    value={t.cr != 0? -t.cr:t.dr}
+                    clickAction={() => props.editTxn(
+                        {
+                            "date": t.date,
+                            "txn": t.txn,
+                            "desc": t.desc? t.desc: "",
+                            "dr": t.dr,
+                            "cr": t.cr,
+                        }
+                    )}/>
             )}
             {props.loading &&
                 <div className="spinner-container">

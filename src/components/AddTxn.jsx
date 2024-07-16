@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
 import "./AddTxn.css";
 import TxnBox from "./containers/TxnBox";
@@ -27,9 +27,9 @@ export default function AddTxn(props) {
 
     async function addTxn() {
         event.preventDefault();
-        props.setPage();
+        props.returnHome();
 
-        const data = {
+        const txnData = {
             "date": date,
             "txn": type,
             "desc": detail? detail: "",
@@ -37,7 +37,7 @@ export default function AddTxn(props) {
             "cr": amount && isCr? Number(amount):0,
         }
 
-        await props.pushTxns(data)
+        await props.pushTxns(txnData)
 
         // 'use server'
         // const productId = formData.get('productId')
@@ -53,6 +53,23 @@ export default function AddTxn(props) {
             setIsCr(true);
         }
     }
+
+    useEffect(() => {
+        if(props.editingTxn !== null) {
+            const data = props.editingTxn;
+            setDate(data["date"]);
+            setType(data["txn"]);
+            setDetail(data["desc"]);
+            if(data["dr"] > 0) {
+                setAmount(data["dr"]);
+                setIsCr(false);
+            } else {
+                setAmount(data["cr"]);
+                setIsCr(true);
+            }
+        }
+
+    }, [])
 
     return(
         <div>
@@ -84,7 +101,7 @@ export default function AddTxn(props) {
                     clickFunc={() => setIsCr(!isCr)}></TxnBox>
 
                 <div className="confirm-cancel">
-                    <button className="cancel" type="button" onClick={props.setPage}>Cancel</button>
+                    <button className="cancel" type="button" onClick={props.returnHome}>Cancel</button>
                     <button className="confirm" type="submit">Confirm</button>
                 </div>
             </form>

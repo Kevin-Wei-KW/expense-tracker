@@ -43,7 +43,7 @@ export default function TxnBox(props) {
     }
 
     return(
-        <div className="TxnBox" onClick={props.clickFunc? props.clickFunc:null}>
+        <div className="TxnBox" onClick={props.clickAction? props.clickAction:null}>
             <div className="txn-top">
                 <div className="type">
                     <b>{provideDefault(props.type, "Type")}</b>
