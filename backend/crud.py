@@ -134,12 +134,10 @@ def dataframe_to_json_list(df: pd.DataFrame) -> list[txn_dict_format]:
             "date": row["Date"],
             "txn": row["Transaction"],
             "desc": row["Description"],
-            "dr": row["Dr"].replace(",", ""),
-            "cr": row["Cr"].replace(",", ""),
+            "dr": str(row["Dr"]).replace(",", ""),
+            "cr": str(row["Cr"]).replace(",", ""),
         }
-
         dict_list.insert(0, new_dict)
-
     return dict_list
 
 #
@@ -178,6 +176,8 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame):
 
     set_with_dataframe(sheet, df)
 
+    return dataframe_to_json_list(df)
+
 
 #
 # Put
@@ -197,7 +197,7 @@ def delete_transaction(row_num: int, df: pd.DataFrame) -> str:
         df.reset_index(drop=True, inplace=True)
         sheet.clear()
         set_with_dataframe(sheet, df)
-        return "Success"
+        return dataframe_to_json_list(df)
     else:
         raise Exception("Deletion Failed (out of bounds)")
 
@@ -212,7 +212,6 @@ def change_transaction(row_num: int, row: list, df: pd.DataFrame):
     """
 
     try:
-        print("HERE")
         index = len(df)-row_num
         if index in df.index:
             prev_date = datetime.strptime(df.loc[index]["Date"], "%Y-%m-%d") if len(df) > 1 else None
@@ -224,7 +223,7 @@ def change_transaction(row_num: int, row: list, df: pd.DataFrame):
                 df = df.sort_values(df.columns[0])  # sort first column (date)
 
             set_with_dataframe(sheet, df)
-            return "Success"
+            return dataframe_to_json_list(df)
         else:
             raise Exception("Change Failed")
     except Exception:

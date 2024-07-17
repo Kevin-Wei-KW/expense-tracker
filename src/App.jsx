@@ -47,13 +47,11 @@ export default function App() {
         logout();
       }
 
-
       setLoadingTxns(false)
       setTxnDataList([...txns])
       modifyTokens(jwts["access_token"], jwts["refresh_token"])
     })
     .catch((error) => {
-      console.log(error)
       if(error.response.status === 403) {
         // Handle Access Denied, Reauthenticate
         logout()
@@ -65,6 +63,7 @@ export default function App() {
   }
 
   function pushTxns(data) {
+    setLoadingTxns(true)
     axios.post(
       API_URL+"/txns", {
         txn: data,
@@ -78,16 +77,25 @@ export default function App() {
       }
     )
     .then((response) => {
+      const txns = response.data["txns"]
+      const jwts = response.data["jwts"]
+      const status = response.data["jwts"][1]
+      
+      if (status !== 200) {
+        logout();
+      }
 
-      modifyTokens(response.data["access_token"], response.data["refresh_token"])
+      setLoadingTxns(false)
+      setTxnDataList([...txns])
+      modifyTokens(jwts["access_token"], jwts["refresh_token"])
 
-      getTxns()
       getStats()
     })
     .catch((error) => logError(error))
   }
 
   function editTxns(row, data) {
+    setLoadingTxns(true)
     axios.put(
       API_URL+"/txns", {
         rowNum: row,
@@ -102,16 +110,25 @@ export default function App() {
       }
     )
     .then((response) => {
+      const txns = response.data["txns"]
+      const jwts = response.data["jwts"]
+      const status = response.data["jwts"][1]
+      
+      if (status !== 200) {
+        logout();
+      }
 
-      modifyTokens(response.data["access_token"], response.data["refresh_token"])
+      setLoadingTxns(false)
+      setTxnDataList([...txns])
+      modifyTokens(jwts["access_token"], jwts["refresh_token"])
 
-      getTxns()
       getStats()
     })
     .catch((error) => logError(error))
   }
   
   function deleteTxns(row) {
+    setLoadingTxns(true)
     axios.delete(
       API_URL+"/txns",
       { data: {
@@ -126,10 +143,18 @@ export default function App() {
       }
     )
     .then((response) => {
+      const txns = response.data["txns"]
+      const jwts = response.data["jwts"]
+      const status = response.data["jwts"][1]
+      
+      if (status !== 200) {
+        logout();
+      }
 
-      modifyTokens(response.data["access_token"], response.data["refresh_token"])
+      setLoadingTxns(false)
+      setTxnDataList([...txns])
+      modifyTokens(jwts["access_token"], jwts["refresh_token"])
 
-      getTxns()
       getStats()
     })
     .catch((error) => logError(error))
@@ -154,6 +179,7 @@ export default function App() {
 
       setLoadingStats(false)
       setStatsDict(stats)
+      modifyTokens(jwts["access_token"], jwts["refresh_token"])
     })
     .catch((error) => logError(error))
   }
@@ -222,14 +248,12 @@ export default function App() {
         const refreshToken = response.data["refresh_token"]
 
         if(accessToken && refreshToken) {
-          // setAccessJwt(response.data["access_token"]);
-          // setRefreshJwt(response.data["refresh_token"]);
+
           modifyTokens(response.data["access_token"], response.data["refresh_token"])
 
           setCookie('sheetLink', sheetLink, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // sheetlink expires in 30 days
           setCookie('worksheetTitle', worksheetTitle, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // worksheet title expires in 30 days
 
-          // getTxns();
           setLogin(true);
         } else {
           console.log("Missing Access/Refresh Tokens")
@@ -277,6 +301,7 @@ export default function App() {
     if (error.response) {
       console.log(error.response.status)
     }
+    
   }
 
   // only modify tokens when changed
@@ -286,7 +311,6 @@ export default function App() {
       setCookie('accessToken', access, { path: '/', maxAge: 3600, secure: true, sameSite: 'strict' }); // access token expires in 1 hour
     }
     if (refresh && refresh != refreshJwt) {
-      console.log(refresh)
       setRefreshJwt(refresh)
       setCookie('refreshToken', refresh, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // refresh token expires in 30 days
     }
@@ -296,12 +320,12 @@ export default function App() {
   const API_URL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
-    // Only call getTxns() if both accessJwt and refreshJwt are defined
+    // Only call getTxns() if either accessJwt and refreshJwt are defined
     if (accessJwt !== undefined || refreshJwt !== undefined) {
       getTxns();
       getStats();
     }
-  }, [refreshJwt]); // This effect will re-run whenever accessJwt or refreshJwt change
+  }, [refreshJwt]); // This effect will re-run whenever refreshJwt change
 
   useEffect(() => getStatus(), []);
 

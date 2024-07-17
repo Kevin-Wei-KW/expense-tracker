@@ -171,8 +171,11 @@ def txns():
             new_row = c.create_row(data)
 
             try:
-                c.push_to_spreadsheet(new_row, df)
-                return response
+                new_txns = c.push_to_spreadsheet(new_row, df)
+                return {
+                    "txns": new_txns,
+                    "jwts": response
+                }
             except Exception:
                 error_msg = "Failed to add new transaction"
                 raise Exception(error_msg)
@@ -183,8 +186,11 @@ def txns():
             new_row = c.create_row(data)
 
             try:
-                c.change_transaction(row_num, new_row, df)
-                return response
+                new_txns = c.change_transaction(row_num, new_row, df)
+                return {
+                    "txns": new_txns,
+                    "jwts": response
+                }
             except Exception:
                 error_msg = "Failed to replace transaction"
                 raise Exception(error_msg)
@@ -193,8 +199,11 @@ def txns():
             row_num = request.json.get("rowNum")
 
             try:
-                c.delete_transaction(row_num, df)
-                return response
+                new_txns = c.delete_transaction(row_num, df)
+                return {
+                    "txns": new_txns,
+                    "jwts": response
+                }
             except Exception:
                 error_msg = "Failed to delete transaction"
                 raise Exception(error_msg)
