@@ -137,7 +137,7 @@ def establish_access(sheet_link, worksheet_title, access_token, refresh_token):
         return "Connection Unsuccessful", 403
 
 
-@api.route('/txns', methods=['GET', 'POST'])
+@api.route('/txns', methods=['GET', 'POST', 'PUT'])
 def txns():
     """
     Retrieve or Upload transactions
@@ -149,11 +149,13 @@ def txns():
     access_token = decode_jwt(request.args.get("accessJwt"), "access_token")
     refresh_token = decode_jwt(request.args.get("refreshJwt"), "refresh_token")
 
+    error_msg = "Reauthenticate (txn)"
+
     try:
         response = establish_access(sheet_link, worksheet_title, access_token, refresh_token)
+        df = c.get_dataframe()
 
         if request.method == "GET":
-            df = c.get_dataframe()
 
             try:
                 return {
@@ -166,7 +168,6 @@ def txns():
         elif request.method == "POST":
             data = request.json.get("txn")
             new_row = c.create_row(data)
-            df = c.get_dataframe()
 
             try:
                 c.push_to_spreadsheet(new_row, df)
@@ -174,8 +175,20 @@ def txns():
             except Exception:
                 raise Exception("Failed to add new transaction")
 
+        elif request.method == "PUT":
+            row_num = request.json.get("rowNum")
+            data = request.json.get("txn")
+            new_row = c.create_row(data)
+
+            try:
+                c.change_transaction(row_num, new_row, df)
+                return response
+            except Exception:
+                error_msg = "Failed to replace transaction"
+                raise Exception("Failed to replace transaction")
+
     except Exception:
-        return "Reauthenticate (txn)", 403
+        return error_msg, 403
 
 
 @api.route('/stats', methods=['GET'])

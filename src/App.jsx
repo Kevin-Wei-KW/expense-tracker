@@ -27,7 +27,6 @@ export default function App() {
   const [cookies, setCookie, removeCookie] = useCookies();
 
   function getTxns() {
-    console.log(worksheetTitle)
     setLoadingTxns(true)
     axios.get(
       API_URL+"/txns",
@@ -87,6 +86,31 @@ export default function App() {
     })
     .catch((error) => logError(error))
   }
+
+  function editTxns(row, data) {
+    axios.put(
+      API_URL+"/txns", {
+        rowNum: row,
+        txn: data,
+      },
+      { params: {
+        sheetLink: sheetLink,
+        worksheetTitle: worksheetTitle,
+        accessJwt: accessJwt,
+        refreshJwt: refreshJwt
+        }
+      }
+    )
+    .then((response) => {
+
+      modifyTokens(response.data["access_token"], response.data["refresh_token"])
+
+      getTxns()
+      getStats()
+    })
+    .catch((error) => logError(error))
+  }
+  
 
   function getStats(data = {"year": new Date().getFullYear(), "month": 0}) {
     setLoadingStats(true)
@@ -275,7 +299,8 @@ export default function App() {
         stats={statsDict}
         getTxns={getTxns}
         getStats={getStats}
-        pushTxns={pushTxns} 
+        pushTxns={pushTxns}
+        editTxns={editTxns}
         loadingStats={loadingStats} 
         loadingTxns={loadingTxns}
         logout={logout}

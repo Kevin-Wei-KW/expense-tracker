@@ -37,7 +37,11 @@ export default function AddTxn(props) {
             "cr": amount && isCr? Number(amount):0,
         }
 
-        await props.pushTxns(txnData)
+        if(props.editingTxn == null) {
+            await props.pushTxns(txnData)
+        } else {
+            await props.editTxns(props.editingTxn["row"], txnData)
+        }
 
         // 'use server'
         // const productId = formData.get('productId')
@@ -55,7 +59,7 @@ export default function AddTxn(props) {
     }
 
     useEffect(() => {
-        if(props.editingTxn !== null) {
+        if(props.editingTxn != null) {
             const data = props.editingTxn;
             setDate(data["date"]);
             setType(data["txn"]);
@@ -67,6 +71,12 @@ export default function AddTxn(props) {
                 setAmount(data["cr"]);
                 setIsCr(true);
             }
+        } else {
+            setDate(currentDate.toISOString().split("T")[0]);
+            setType("Food");
+            setDetail();
+            setAmount();
+            setIsCr(true);
         }
 
     }, [])

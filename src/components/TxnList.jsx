@@ -25,6 +25,7 @@ export default function TxnList(props) {
                             "desc": t.desc? t.desc: "",
                             "dr": t.dr,
                             "cr": t.cr,
+                            "row": i,
                         }
                     )}/>
             )}

@@ -180,6 +180,57 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame):
 
 
 #
+# Put
+#
+
+def delete_transaction(row_num: int, df: pd.DataFrame) -> str:
+    """
+    Delete row number from dataframe
+    :param row_num: the row number to delete
+    :param df: the dataframe
+    :return: Success or Fail
+    """
+
+    if row_num in df.index:
+        df.drop(index=row_num, inplace=True)
+        df.reset_index(drop=True, inplace=True)
+        set_with_dataframe(sheet, df)
+        return "Success"
+    else:
+        raise Exception("Deletion Failed (out of bounds)")
+
+
+def change_transaction(row_num: int, row: list, df: pd.DataFrame):
+    """
+    Replaces an existing transaction based on index
+    :param row_num: the row number to replace
+    :param row: the replacement row
+    :param df: the dataframe
+    :return: Success or Fail
+    """
+
+    try:
+        index = len(df)-row_num
+        print([index, df.index, df.loc[index]])
+        if index in df.index:
+            prev_date = datetime.strptime(df.loc[index]["Date"], "%Y-%m-%d") if len(df) > 1 else None
+            cur_date = datetime.strptime(row[0], "%Y-%m-%d")
+
+            df.loc[index] = row
+            # sort if new transaction has earlier date
+            if prev_date is not None and cur_date != prev_date:
+                df = df.sort_values(df.columns[0])  # sort first column (date)
+
+            set_with_dataframe(sheet, df)
+            return "Success"
+        else:
+            raise Exception("Change Failed")
+    except Exception:
+        raise Exception("Change Failed")
+
+
+
+#
 # Analytical
 #
 

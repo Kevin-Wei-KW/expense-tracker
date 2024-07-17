@@ -11,25 +11,30 @@ export default function Page(props) {
     const [pageSelector, setPageSelector] = useState("Home");
     const [editingTxn, setEditingTxn] = useState();
 
-    function editTxn(data) {
+    function setEditTxnSelector(data) {
         setPageSelector("AddTxn")
         setEditingTxn(data)
+    }
+
+    function setAddTxnSelector() {
+        setPageSelector("AddTxn")
+        setEditingTxn()
     }
 
     function showPageContent() {
         window.scrollTo(0, 0);
         if (pageSelector === "AddTxn") {
-            return <AddTxn returnHome={()=>setPageSelector("Home")} pushTxns={props.pushTxns} editingTxn={editingTxn}/>;
+            return <AddTxn returnHome={()=>setPageSelector("Home")} pushTxns={props.pushTxns} editTxns={props.editTxns} editingTxn={editingTxn}/>;
         } else if(pageSelector === "Stats") {
             return <Stats stats={props.stats} getStats={props.getStats} loading={props.loadingStats}/>;
         } else {
-            return <TxnList txns={props.txns} loading={props.loadingTxns} editTxn={editTxn}/>;
+            return <TxnList txns={props.txns} loading={props.loadingTxns} editTxn={setEditTxnSelector}/>;
         }
     }
 
     function showAddTxnBtn() {
         if (pageSelector != "AddTxn" && pageSelector != "Stats") {
-            return <AddTxnBtn setPage={()=>setPageSelector("AddTxn")}/>
+            return <AddTxnBtn setPage={setAddTxnSelector}/>
         }
     }
     function showNavBar() {
