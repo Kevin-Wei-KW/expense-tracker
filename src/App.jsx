@@ -111,6 +111,29 @@ export default function App() {
     .catch((error) => logError(error))
   }
   
+  function deleteTxns(row) {
+    axios.delete(
+      API_URL+"/txns",
+      { data: {
+          rowNum: row,
+        }, 
+        params: {
+        sheetLink: sheetLink,
+        worksheetTitle: worksheetTitle,
+        accessJwt: accessJwt,
+        refreshJwt: refreshJwt
+        }
+      }
+    )
+    .then((response) => {
+
+      modifyTokens(response.data["access_token"], response.data["refresh_token"])
+
+      getTxns()
+      getStats()
+    })
+    .catch((error) => logError(error))
+  }
 
   function getStats(data = {"year": new Date().getFullYear(), "month": 0}) {
     setLoadingStats(true)
@@ -263,6 +286,7 @@ export default function App() {
       setCookie('accessToken', access, { path: '/', maxAge: 3600, secure: true, sameSite: 'strict' }); // access token expires in 1 hour
     }
     if (refresh && refresh != refreshJwt) {
+      console.log(refresh)
       setRefreshJwt(refresh)
       setCookie('refreshToken', refresh, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // refresh token expires in 30 days
     }
@@ -301,6 +325,7 @@ export default function App() {
         getStats={getStats}
         pushTxns={pushTxns}
         editTxns={editTxns}
+        deleteTxns={deleteTxns}
         loadingStats={loadingStats} 
         loadingTxns={loadingTxns}
         logout={logout}

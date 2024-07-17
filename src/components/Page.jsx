@@ -24,7 +24,12 @@ export default function Page(props) {
     function showPageContent() {
         window.scrollTo(0, 0);
         if (pageSelector === "AddTxn") {
-            return <AddTxn returnHome={()=>setPageSelector("Home")} pushTxns={props.pushTxns} editTxns={props.editTxns} editingTxn={editingTxn}/>;
+            return <AddTxn
+                    returnHome={()=>setPageSelector("Home")}
+                    pushTxns={props.pushTxns}
+                    editTxns={props.editTxns}
+                    deleteTxns={props.deleteTxns}
+                    editingTxn={editingTxn}/>;
         } else if(pageSelector === "Stats") {
             return <Stats stats={props.stats} getStats={props.getStats} loading={props.loadingStats}/>;
         } else {

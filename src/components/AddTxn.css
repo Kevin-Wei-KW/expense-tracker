@@ -10,6 +10,11 @@
     align-items: center;
 }
 
+.line-two {
+    height: 7%;
+    width: 80%;
+}
+
 .line-input {
     height: 7%;
     width: 80%;
@@ -24,11 +29,13 @@
     border-style: inset;
     border-color: rgba(255, 255, 255, 0.3);
 
+    color: white !important;
     background-color: #1A1A1A;
 }
 
 .line-input option {
     width: 80px;
+    color: white !important;
 }
 
 .box-input {
@@ -71,4 +78,8 @@
 
 .confirm {
     background-color: #36512B;
+}
+
+.delete {
+    background-color: #561E1E;
 }

@@ -190,10 +190,12 @@ def delete_transaction(row_num: int, df: pd.DataFrame) -> str:
     :param df: the dataframe
     :return: Success or Fail
     """
+    index = len(df) - row_num
 
-    if row_num in df.index:
-        df.drop(index=row_num, inplace=True)
+    if index in df.index:
+        df.drop(index=index, inplace=True)
         df.reset_index(drop=True, inplace=True)
+        sheet.clear()
         set_with_dataframe(sheet, df)
         return "Success"
     else:
@@ -210,8 +212,8 @@ def change_transaction(row_num: int, row: list, df: pd.DataFrame):
     """
 
     try:
+        print("HERE")
         index = len(df)-row_num
-        print([index, df.index, df.loc[index]])
         if index in df.index:
             prev_date = datetime.strptime(df.loc[index]["Date"], "%Y-%m-%d") if len(df) > 1 else None
             cur_date = datetime.strptime(row[0], "%Y-%m-%d")
