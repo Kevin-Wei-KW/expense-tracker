@@ -32,8 +32,6 @@ export default function Page(props) {
                     editingTxn={editingTxn}/>;
         } else if(pageSelector === "Stats") {
             return <Stats stats={props.stats} getStats={props.getStats} loading={props.loadingStats}/>;
-        } else {
-            return <TxnList txns={props.txns} loading={props.loadingTxns} editTxn={setEditTxnSelector}/>;
         }
     }
 
@@ -50,6 +48,12 @@ export default function Page(props) {
 
     return(
         <div className="Page">
+            <TxnList
+                txns={props.txns}
+                loading={props.loadingTxns}
+                editTxn={setEditTxnSelector}
+                hide={pageSelector !== "Home"}
+                style={{display: "none"}}/>
             {showPageContent()}
             {showAddTxnBtn()}
             {showNavBar()}

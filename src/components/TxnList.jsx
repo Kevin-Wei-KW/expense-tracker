@@ -6,7 +6,7 @@ import TxnBox from "./containers/TxnBox.jsx";
 
 export default function TxnList(props) {
     return(
-        <div className="TxnList">
+        <div className="TxnList" style={{display: props.hide? "none":"flex"}}>
             {!props.loading && props.txns.length === 0 &&
                 <div className="empty-txns">
                     No Transactions Yet
