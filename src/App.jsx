@@ -21,6 +21,7 @@ export default function App() {
   const [loginError, setLoginError] = useState(false)
   const [worksheetTitle, setWorksheetTitle] = useState()
   const [sheetLink, setSheetLink] = useState()
+  const [overwriteConfirm, setOverwriteConfirm] = useState(false)
 
   const [accessJwt, setAccessJwt] = useState()
   const [refreshJwt, setRefreshJwt] = useState()
@@ -45,10 +46,18 @@ export default function App() {
       
       if (status !== 200) {
         logout();
+        return
       }
 
-      setLoadingTxns(false)
-      setTxnDataList([...txns])
+      if (txns === "Overwrite") {
+        setOverwriteConfirm(true)
+        // setLogin(false);
+      } else {
+        setLoadingTxns(false)
+        setTxnDataList([...txns])
+        setLogin(true);
+      }
+
       modifyTokens(jwts["access_token"], jwts["refresh_token"])
     })
     .catch((error) => {
@@ -83,6 +92,7 @@ export default function App() {
       
       if (status !== 200) {
         logout();
+        return
       }
 
       setLoadingTxns(false)
@@ -116,6 +126,7 @@ export default function App() {
       
       if (status !== 200) {
         logout();
+        return
       }
 
       setLoadingTxns(false)
@@ -149,6 +160,7 @@ export default function App() {
       
       if (status !== 200) {
         logout();
+        return
       }
 
       setLoadingTxns(false)
@@ -202,13 +214,35 @@ export default function App() {
     })
   }
 
+  function overwriteSheet(confirmed) {
+    if(!confirmed) {
+      setOverwriteConfirm(false);
+      return
+    }
+    axios.put(
+      API_URL+"/overwrite",
+      { params: {
+        sheetLink: sheetLink,
+        worksheetTitle: worksheetTitle,
+        accessJwt: accessJwt,
+        refreshJwt: refreshJwt,
+      }}
+    )
+    .then((response) => {
+      getTxns();
+      getStats();
+      setOverwriteConfirm(false);
+    })
+    .catch((error) => logError(error))
+  }
+
   function cookiesLogin() {
     // use cookies tokens if possible
     if ((cookies.accessToken || cookies.refreshToken) && cookies.sheetLink && cookies.worksheetTitle) {
       modifyTokens(cookies.accessToken, cookies.refreshToken);
       setSheetLink(cookies.sheetLink)
       setWorksheetTitle(cookies.worksheetTitle)
-      setLogin(true);
+      // setLogin(true);
 
       if (!cookies.accessToken) {
         axios.get(
@@ -254,7 +288,7 @@ export default function App() {
           setCookie('sheetLink', sheetLink, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // sheetlink expires in 30 days
           setCookie('worksheetTitle', worksheetTitle, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // worksheet title expires in 30 days
 
-          setLogin(true);
+          // setLogin(true);
         } else {
           console.log("Missing Access/Refresh Tokens")
         }
@@ -267,7 +301,7 @@ export default function App() {
     })
   }
 
-  function logout() {
+  async function logout() {
     removeCookie('sheetLink', { path: '/' });
     removeCookie('worksheetTitle', { path: '/' });
     removeCookie('accessToken', { path: '/' });
@@ -280,6 +314,8 @@ export default function App() {
     setLoadingTxns(false)
     setStatsDict({})
     setLoadingStats(false)
+
+    setOverwriteConfirm(false);
 
     setLogin(false)
   }
@@ -335,6 +371,8 @@ export default function App() {
       {!login &&
       <LoginPage
         loginMessage={loginMessage}
+        overwriteConfirm={overwriteConfirm}
+        overwriteSheet={overwriteSheet}
         setSheetLink={setSheetLink}
         setWorksheetTitle={setWorksheetTitle}
         login={googleLogin}

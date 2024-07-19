@@ -71,30 +71,39 @@ def connect_client(credentials, sheet_link, worksheet_title):
     sheet = sh.worksheet(worksheet_title)
 
     if sheet is not None:
-        try:
-            setup_sheet()
-            return "Connected"
-        except:
-            raise Exception("Connection failed during setup, check instructions.")
+        return True
+    else:
+        raise Exception("Connection failed during setup, check instructions.")
 
 
 def setup_sheet():
     """
-    Sets up a new spreadsheet
+    Check for set up a new spreadsheet
     """
 
     df = pd.DataFrame(sheet.get_all_values())
-
     headers = ["Date", "Transaction", "Description", "Dr", "Cr"]
 
-    if df.loc[0].values.tolist()[0].lower() == "replace":
+    if df.loc[0].values.tolist() != headers:
+        return "Overwrite"
+
+
+def overwrite_sheet():
+    """
+    Overwrite an untemplated sheet
+    """
+
+    df = pd.DataFrame(sheet.get_all_values())
+    headers = ["Date", "Transaction", "Description", "Dr", "Cr"]
+
+    try:
         sheet.clear()
         blank_df = pd.DataFrame([headers])
         blank_df.columns = blank_df.iloc[0]
         blank_df = blank_df.drop(blank_df.index[0])
         set_with_dataframe(sheet, blank_df)
-    elif df.loc[0].values.tolist() != headers:
-        raise Exception("Please check setup instructions.")
+    except Exception:
+        raise Exception("Overwrite failed")
 
 
 def get_dataframe() -> pd.DataFrame:
