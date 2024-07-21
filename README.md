@@ -21,7 +21,7 @@ For Login-less Demo: [https://expense-tracker-web-demo.onrender.com](https://exp
 
 ***
 ## iOS Device Setup
-1. Go to the browser of your choice (Chrome or Safari is best)
+1. Go to the browser of your choice (Safari is best, Chrome is good)
 2. Navigate to [https://expense-tracker-web-1ge1.onrender.com](https://expense-tracker-web-1ge1.onrender.com)
 3. Press the "Share" button <img src="public/share-btn.png" alt="drawing" width="16"/>  
 4. Select the "Add to Home Screen"

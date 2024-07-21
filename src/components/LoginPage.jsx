@@ -15,6 +15,15 @@ export default function Page(props) {
 
             <button className="tutorial-btn" type="button" onClick={()=>setShowTutorial(true)}>?</button>
 
+            {props.overwriteConfirm && 
+            <div className="overwrite-menu">
+                <div className="overwrite-message">Confirm overwriting your selected worksheet?"</div>
+                <button className="overwrite-button" type="button" onClick={()=>props.overwriteSheet(true)}>Confirm</button>    
+                <button className="overwrite-button" type="button" onClick={()=>props.overwriteSheet(false)}>Deny</button>    
+
+            </div>
+            }
+
             {showTutorial &&
             <div className="tutorial" onClick={() => setShowTutorial(false)}>
                 <h2>First Time Setup</h2>
@@ -24,8 +33,7 @@ export default function Page(props) {
                 </span>
                 <h3><u>Step 2</u>:</h3>
                 <span style={{display:"inline-block"}}>
-                    Set a <b>worksheet title</b> (shown as tabs at bottom of page). <br/>
-                    In the upper left cell, type: <b><u>replace</u></b>
+                    Set a <b>Worksheet Title</b> (shown as TABS at bottom of page) NOT the Google Sheet Name. <br/>
                 </span>
                 <br/>
                 <br/>
@@ -35,7 +43,7 @@ export default function Page(props) {
                 <h3><u>Step 3</u>:</h3>
                 <span style={{display:"inline-block"}}>
                     Copy the Google Sheet link (If on mobile, link is in the "Share" menu)
-                    In the login page, enter Google Sheet link and Worksheet title, then login to your account.
+                    In the login page, enter Google Sheet Link and Worksheet Title, then login to your account.
                 </span>
                 <h3><u>Step 4</u>:</h3>
                 <span style={{display:"inline-block"}}>
