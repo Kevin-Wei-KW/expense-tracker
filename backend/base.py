@@ -81,6 +81,9 @@ def decode_jwt(token_jwt, token_type="access_token"):
 
 @api.route('/login', methods=['GET'])
 def login():
+    """
+    Process login request
+    """
 
     auth_code = request.args.get("code")
 
@@ -96,6 +99,9 @@ def login():
 
 @api.route('/new_access', methods=['GET'])
 def new_access():
+    """
+    Process new access token request
+    """
     sheet_link = request.args.get("sheetLink")
     worksheet_title = request.args.get("worksheetTitle")
     refresh_token = decode_jwt(request.args.get("refreshJwt"), "refresh_token")
@@ -171,13 +177,13 @@ def txns():
     try:
         access_response = establish_access(sheet_link, worksheet_title, access_token, refresh_token)
         sheet_response = c.setup_sheet()
-        df = c.get_dataframe()
 
         if sheet_response == "Overwrite":
             return {
                 "txns": "Overwrite",
                 "jwts": access_response
             }
+        df = c.get_dataframe()
 
         if request.method == "GET":
 
@@ -273,6 +279,9 @@ def stats():
 
 
 def get_new_access_token(refresh_token):
+    """
+    Grant new access token
+    """
 
     data = {
         'grant_type': REFRESH_GRANT,

@@ -84,7 +84,7 @@ def setup_sheet():
     df = pd.DataFrame(sheet.get_all_values())
     headers = ["Date", "Transaction", "Description", "Dr", "Cr"]
 
-    if df.loc[0].values.tolist() != headers:
+    if len(df) == 0 or df.loc[0].values.tolist() != headers:
         return "Overwrite"
 
 
