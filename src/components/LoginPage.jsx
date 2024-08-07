@@ -11,7 +11,7 @@ export default function Page(props) {
             <h2 className="message">{props.loginMessage}</h2>
             <input className="sheet-input" placeholder="Google Sheet Link" type="text" name="file-link" onChange={(e) => props.setSheetLink(e.target.value)}/>
             <input className="worksheet-input" placeholder="Worksheet Title" type="text" name="worksheet-name" onChange={(e) => props.setWorksheetTitle(e.target.value)}/>
-            <button className="login-btn" type="button" onClick={props.login}>Login</button>
+            <button className="login-btn" type="button" onClick={props.login}>Google Login</button>
             
             <div className="misc-btns">
                 <button className="home-btn" type="button" onClick={()=>props.setHome(true)}>

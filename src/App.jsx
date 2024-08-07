@@ -19,7 +19,7 @@ export default function App() {
 
   const [home, setHome] = useState(true)
 
-  const [loginMessage, setLoginMessage] = useState("Connect to Google Sheet")
+  const [loginMessage, setLoginMessage] = useState("Connect to Google Sheets")
   const [login, setLogin] = useState(false)
   const [loginError, setLoginError] = useState(false)
   const [worksheetTitle, setWorksheetTitle] = useState()
