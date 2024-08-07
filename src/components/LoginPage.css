@@ -71,12 +71,31 @@
     color: white;
 }
 
-.tutorial-btn {
+
+.misc-btns {
     position: absolute;
     bottom: 5vh;
+    width: 300px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* Distribute space between buttons */
+    align-items: center; /* Align items vertically */
+}
+
+.home-btn {
+    position: relative;
+    height: 70px;
+    width: 70px;
+    font-size: 18px;
+    color: white !important;
+    box-shadow: 0 0 10px gray;
+}
+.tutorial-btn {
+    height: 70px;
+    width: 70px;
     font-size: 24px;
     color: white !important;
-
     box-shadow: 0 0 10px gray;
 }
 .tutorial-btn:hover {

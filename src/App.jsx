@@ -7,6 +7,7 @@ import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 
 import Page from "./components/Page.jsx"
 import LoginPage from "./components/LoginPage.jsx"
+import HomePage from "./components/HomePage.jsx"
 
 
 export default function App() {
@@ -15,6 +16,8 @@ export default function App() {
 
   const [statsDict, setStatsDict] = useState({})
   const [loadingStats, setLoadingStats] = useState(false)
+
+  const [home, setHome] = useState(true)
 
   const [loginMessage, setLoginMessage] = useState("Connect to Google Sheet")
   const [login, setLogin] = useState(false)
@@ -367,9 +370,15 @@ export default function App() {
 
   return (
     <div className="App">
+      {home && 
+      <HomePage
+        setHome={setHome}
+      />
+      }
 
-      {!login &&
+      {!login && !home &&
       <LoginPage
+        setHome={setHome}
         loginMessage={loginMessage}
         overwriteConfirm={overwriteConfirm}
         overwriteSheet={overwriteSheet}
@@ -379,7 +388,7 @@ export default function App() {
       />
       }
 
-      {login && 
+      {login && !home &&
       <Page
         txns={txnDataList}
         stats={statsDict}

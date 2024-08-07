@@ -12,8 +12,13 @@ export default function Page(props) {
             <input className="sheet-input" placeholder="Google Sheet Link" type="text" name="file-link" onChange={(e) => props.setSheetLink(e.target.value)}/>
             <input className="worksheet-input" placeholder="Worksheet Title" type="text" name="worksheet-name" onChange={(e) => props.setWorksheetTitle(e.target.value)}/>
             <button className="login-btn" type="button" onClick={props.login}>Login</button>
-
-            <button className="tutorial-btn" type="button" onClick={()=>setShowTutorial(true)}>?</button>
+            
+            <div className="misc-btns">
+                <button className="home-btn" type="button" onClick={()=>props.setHome(true)}>
+                    <span style={{fontSize:'30px'}}>&#8617;</span>
+                </button>
+                <button className="tutorial-btn" type="button" onClick={()=>setShowTutorial(true)}>?</button>
+            </div>
 
             {props.overwriteConfirm && 
             <div className="overwrite-menu">

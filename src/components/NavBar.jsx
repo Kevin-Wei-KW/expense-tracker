@@ -10,14 +10,14 @@ export default function NavBar(props) {
     const [extraMenu, setExtraMenu] = useState(false)
 
     async function updateData() {
-        props.setPage("Home");
+        props.setPage("Txns");
         await props.getTxns();
         await props.getStats();
     }
 
     return (
         <div className="NavBar">
-            <div className={props.page=="Home"? "nav-button selected":"nav-button"} onClick={() => props.setPage("Home")}><AiFillHome size={40}/></div>
+            <div className={props.page=="Txns"? "nav-button selected":"nav-button"} onClick={() => props.setPage("Txns")}><AiFillHome size={40}/></div>
             <div className={props.page=="Stats"? "nav-button selected":"nav-button"} onClick={() => props.setPage("Stats")}><BsFillBarChartFill size={40}/></div>
             <div className="nav-button" onClick={() => setExtraMenu(true)}><MdMoreVert size={40}/></div>  
 
