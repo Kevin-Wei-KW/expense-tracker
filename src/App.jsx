@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from "axios";
 import './App.css'
 import { CookiesProvider, useCookies } from 'react-cookie'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 
