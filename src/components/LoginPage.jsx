@@ -15,7 +15,7 @@ export default function Page(props) {
             
             <div className="misc-btns">
                 <button className="home-btn" type="button" onClick={()=>props.setHome(true)}>
-                    <span style={{fontSize:'30px'}}>&#8617;</span>
+                    <span style={{fontSize:'30px', fontFamily:'monospace'}}>&#8617;</span>
                 </button>
                 <button className="tutorial-btn" type="button" onClick={()=>setShowTutorial(true)}>?</button>
             </div>
