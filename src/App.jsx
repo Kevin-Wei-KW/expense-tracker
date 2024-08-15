@@ -56,7 +56,7 @@ export default function App() {
 
       if (txns === "Overwrite") {
         setOverwriteConfirm(true)
-        // setLogin(false);
+        setLogin(false);
       } else {
         setLoadingTxns(false)
         setTxnDataList([...txns])
