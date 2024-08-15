@@ -68,7 +68,7 @@ export default function App() {
       modifyTokens(jwts["access_token"], jwts["refresh_token"])
     })
     .catch((error) => {
-      if(error.response.status === 403) {
+      if(error.response.status === 403 || error.response.status === 500) {
         // Handle Access Denied, Reauthenticate
         logout()
         setLoginMessage("Access Denied: Please Check Login Info")
@@ -241,7 +241,12 @@ export default function App() {
       getTxns();
       // getStats();
     })
-    .catch((error) => {setOverwriteConfirm(false); logError(error)})
+    .catch((error) => {
+        logout()
+        setLoginMessage("Access Denied: Please Check Login Info")
+        setOverwriteConfirm(false);
+        logError(error)
+    })
   }
 
   function cookiesLogin() {
