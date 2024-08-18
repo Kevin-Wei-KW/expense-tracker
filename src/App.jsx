@@ -344,12 +344,12 @@ export default function App() {
 //     scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file"
 //   })
 //
-//   function logError(error) {
-//     if (error.response) {
-//       console.log(error.response.status)
-//     }
-//
-//   }
+  function logError(error) {
+    if (error.response) {
+      console.log(error.response.status)
+    }
+
+  }
 
 //   // only modify tokens when changed
 //   function modifyTokens(access, refresh) {
