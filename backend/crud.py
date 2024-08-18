@@ -20,10 +20,11 @@ header_name = {
 
 type_name = {
     "food": "Food",
-    "rec": "Rec",
+    "recreation": "Recreation",
     "school": "School",
     "misc": "Misc",
     "grocery": "Grocery",
+    "housing": "Housing",
     "earning": "Earning",
 }
 
@@ -89,12 +90,10 @@ def dataframe_to_json_list(df: pd.DataFrame) -> list[txn_dict_format]:
             "date": row["Date"],
             "txn": row["Transaction"],
             "desc": row["Description"],
-            "dr": row["Dr"].replace(",", ""),
-            "cr": row["Cr"].replace(",", ""),
+            "dr": str(row["Dr"]).replace(",", ""),
+            "cr": str(row["Cr"]).replace(",", ""),
         }
-
         dict_list.insert(0, new_dict)
-
     return dict_list
 
 #
@@ -122,17 +121,73 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame):
     sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
 
     # track dates
-    prev_date = datetime.strptime(df.loc[len(df)]["Date"], "%Y-%m-%d")
+    prev_date = datetime.strptime(df.loc[len(df)]["Date"], "%Y-%m-%d") if len(df) > 1 else None
     cur_date = datetime.strptime(row[0], "%Y-%m-%d")
 
     # insert new row
     df.loc[len(df)+1] = row
 
     # sort if new transaction has earlier date
-    if cur_date < prev_date:
+    if prev_date is not None and cur_date < prev_date:
         df = df.sort_values(df.columns[0])  # sort first column (date)
 
     set_with_dataframe(sheet, df)
+
+    return dataframe_to_json_list(df)
+
+
+#
+# Put
+#
+
+def delete_transaction(row_num: int, df: pd.DataFrame) -> list:
+    """
+    Delete row number from dataframe
+    :param row_num: the row number to delete
+    :param df: the dataframe
+    :return: Success or Fail
+    """
+    index = len(df) - row_num
+    sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
+
+    if index in df.index:
+        df.drop(index=index, inplace=True)
+        df.reset_index(drop=True, inplace=True)
+        sheet.clear()
+        set_with_dataframe(sheet, df)
+        return dataframe_to_json_list(df)
+    else:
+        raise Exception("Deletion Failed (out of bounds)")
+
+
+def change_transaction(row_num: int, row: list, df: pd.DataFrame):
+    """
+    Replaces an existing transaction based on index
+    :param row_num: the row number to replace
+    :param row: the replacement row
+    :param df: the dataframe
+    :return: Success or Fail
+    """
+    sheet = client.open(TARGET_SHEET).worksheet(TARGET_WORKSHEET)
+
+    try:
+        index = len(df)-row_num
+        if index in df.index:
+            prev_date = datetime.strptime(df.loc[index]["Date"], "%Y-%m-%d") if len(df) > 1 else None
+            cur_date = datetime.strptime(row[0], "%Y-%m-%d")
+
+            df.loc[index] = row
+            # sort if new transaction has earlier date
+            if prev_date is not None and cur_date != prev_date:
+                df = df.sort_values(df.columns[0])  # sort first column (date)
+
+            set_with_dataframe(sheet, df)
+            return dataframe_to_json_list(df)
+        else:
+            raise Exception("Change Failed")
+    except Exception:
+        raise Exception("Change Failed")
+
 
 
 #
@@ -157,14 +212,16 @@ def get_column_sum(df: pd.DataFrame, need_cr: bool = True, txn_type: str = "", c
     """
 
     total: float = 0.0
-    header = header_name["cr"] if need_cr else header_name["dr"]
+    header_pos = header_name["cr"] if need_cr else header_name["dr"]
+    header_neg = header_name["dr"] if need_cr else header_name["cr"]
     year = cur_filter["year"] if "year" in cur_filter else datetime.now().year
     month = cur_filter["month"] if "month" in cur_filter else 0
 
     for row_idx, row in df.iterrows():
         date = datetime.strptime(row[header_name["date"]], "%Y-%m-%d")
         cur_header = row[header_name["txn"]]
-        value = row[header].replace(",", "")
+        value_pos = row[header_pos].replace(",", "")
+        value_neg = row[header_neg].replace(",", "")
 
         if date.year != year:
             continue
@@ -175,8 +232,8 @@ def get_column_sum(df: pd.DataFrame, need_cr: bool = True, txn_type: str = "", c
         if txn_type != "" and cur_header != txn_type:
             continue
 
-        if is_float(value):
-            total += float(value)
+        if is_float(value_pos) and is_float(value_neg):
+            total += float(value_pos) - float(value_neg)
     return total
 
 
@@ -190,10 +247,11 @@ def get_all_stats(df: pd.DataFrame,
     """
 
     stats: dict[str, float] = {"Food": get_column_sum(df, True, "Food", cur_filter),
-                               "Rec": get_column_sum(df, True, "Rec", cur_filter),
+                               "Recreation": get_column_sum(df, True, "Recreation", cur_filter),
                                "School": get_column_sum(df, True, "School", cur_filter),
                                "Misc": get_column_sum(df, True, "Misc", cur_filter),
                                "Grocery": get_column_sum(df, True, "Grocery", cur_filter),
+                               "Housing": get_column_sum(df, True, "Housing", cur_filter),
                                "Earning": get_column_sum(df, False, "Earning", cur_filter)}
 
     return stats

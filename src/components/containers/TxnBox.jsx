@@ -14,7 +14,7 @@ export default function TxnBox(props) {
 
     function processValue(value) {
         if(value === undefined || isNaN(value)) {
-            return "$_________"
+            return "$0.00"
         }
 
         if(value < 0) {
@@ -37,7 +37,7 @@ export default function TxnBox(props) {
     }
 
     function getValueColor() {
-        if(props.value == 0) {
+        if(props.value == 0 || props.value === undefined || isNaN(props.value)) {
             return "rgba(255,255,255,0.3)"
         } else if(props.value > 0) {
             return "rgba(56,84,44,1)"
@@ -47,7 +47,7 @@ export default function TxnBox(props) {
     }
 
     return(
-        <div className="TxnBox">
+        <div className="TxnBox" onClick={props.clickAction? props.clickAction:null}>
             <div className="txn-top">
                 <div className="type">
                     <b>{provideDefault(props.type, "Type")}</b>
@@ -60,7 +60,7 @@ export default function TxnBox(props) {
                 <div className="details">
                     {provideDefault(props.details, "")}
                 </div>
-                <div className="value" onClick={() => {navigator.clipboard.writeText(Math.abs(props.value))}}>
+                <div className="value" onClick={() => {navigator.clipboard.writeText(formatNumber(Math.abs(props.value)))}}>
                     <div className="value-display" style={{backgroundColor: getValueColor()}}>
                         {processValue(props.value)}
                     </div>

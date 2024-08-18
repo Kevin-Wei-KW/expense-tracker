@@ -37,3 +37,8 @@ rgba(0,0,0, 0) 100%, rgba(0,0,0, 0) 0
     flex-direction: column-reverse;
     
 }
+
+.empty-txns {
+  font-size: 30px;
+  margin: auto;
+}

@@ -1,22 +1,35 @@
 # Expense Tracker
 A web application designed for the phone, aiming to make tracking expenses easy and compatible with Google spreadsheets.
 
-For demo: [https://expense-tracker-web-demo.onrender.com](https://expense-tracker-web-demo.onrender.com/)
+The App: [https://expense-tracker-web-1ge1.onrender.com](https://expense-tracker-web-1ge1.onrender.com)
+<br/>Check out [iOS Setup](#ios-device-setup)
 
-*Added transactions will be saved in database.
+For Login-less Demo: [https://expense-tracker-web-demo.onrender.com](https://expense-tracker-web-demo.onrender.com/)
+<br/>*This server will take a minute to spin up
 
-*Initial loading may take a minute for Demo server to boot up.
 
-*For display as an app on iOS, add link to homescreen as a bookmark.
-
+***
 ## What does it do?
 - Retrieves formatted transaction data from personal Google Sheets to be displayed comfortably on phone screens.
 - Allows user to enter new transactions while on the go with the clicks of a few buttons.
+- Supports secure Google Login, accessing spreadsheet through URL.
+- Uses Cookies to enable persistent login, no need for repeated sign-ins.
 - Syncs data to Google Sheets real time for accessibility.
 - Filters transaction history based on selected time periods.
 
 ![](./public/expense_tracker.gif)
 
+***
+## iOS Device Setup
+1. Go to the browser of your choice (Safari is best, Chrome is good)
+2. Navigate to [https://expense-tracker-web-1ge1.onrender.com](https://expense-tracker-web-1ge1.onrender.com)
+3. Press the "Share" button <img src="public/share-btn.png" alt="drawing" width="16"/>  
+4. Select the "Add to Home Screen"
+5. Find your App on your Home Screen, and it's all done!
+
+<img src="./public/ios_demo.gif" width="190" height="400">
+
+***
 ## Config
 - **Python**: 3.11.5
 - **ReactJS**: 18.2.0
