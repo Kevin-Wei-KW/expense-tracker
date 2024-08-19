@@ -42,7 +42,7 @@ export default function Page(props) {
     }
     function showNavBar() {
         if (pageSelector != "AddTxn") {
-            return <NavBar page={pageSelector} setPage={setPageSelector} getTxns={props.getTxns} getStats={props.getStats} logout={props.logout}/>
+            return <NavBar page={pageSelector} setPage={setPageSelector} getTxns={props.getTxns} getStats={props.getStats} logout={props.logout} sheetLink={props.sheetLink}/>
         }
     }
 

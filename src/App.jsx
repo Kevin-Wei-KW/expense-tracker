@@ -406,6 +406,7 @@ export default function App() {
         loadingStats={loadingStats} 
         loadingTxns={loadingTxns}
         logout={logout}
+        sheetLink={sheetLink}
       />}
 
       {!login && loginError &&

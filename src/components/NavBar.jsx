@@ -4,7 +4,7 @@ import "./NavBar.css";
 import {AiFillHome} from 'react-icons/ai';
 import {BsFillBarChartFill} from 'react-icons/bs';
 import {FaMagnifyingGlass} from 'react-icons/fa6';
-import { MdOutlineRefresh, MdExitToApp, MdMoreVert } from "react-icons/md";
+import { MdOutlineRefresh, MdExitToApp, MdMoreVert, MdOpenInNew } from "react-icons/md";
 
 export default function NavBar(props) {
     const [extraMenu, setExtraMenu] = useState(false)
@@ -13,6 +13,10 @@ export default function NavBar(props) {
         props.setPage("Txns");
         await props.getTxns();
         await props.getStats();
+    }
+
+    function goToSpreadsheet() {
+        window.open(props.sheetLink, "_blank");
     }
 
     return (
@@ -24,7 +28,8 @@ export default function NavBar(props) {
             { extraMenu &&
                 <div className="extra-menu" onClick={() => setExtraMenu(false)}>
                     <button className="nav-extra-button" type="button" onClick={updateData}><MdOutlineRefresh size={20}/>Refresh</button>    
-                    <button className="nav-extra-button" type="button" onClick={props.logout}><MdExitToApp size={20}/>Log out</button>    
+                    <button className="nav-extra-button" type="button" onClick={goToSpreadsheet}><MdOpenInNew size={20}/>Spreadsheet</button>
+                    <button className="nav-extra-button" type="button" onClick={props.logout}><MdExitToApp size={20}/>Log out</button>
                 </div>   
             } 
         </div>
