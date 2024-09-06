@@ -38,5 +38,3 @@ For Login-less Demo: [https://expense-tracker-web-demo.onrender.com](https://exp
   
 *See requirements.txt for other pip dependencies*
 
-## History
-See [Old Expense Tracker Repo](https://github.com/Kevin-Wei-KW/ExpenseTracker) for detailed development commit history.
