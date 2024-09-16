@@ -1,4 +1,4 @@
-# Expense Tracker
+# ExpenseLink
 A web application designed for the phone, aiming to make tracking expenses easy and compatible with Google spreadsheets.
 
 The App: [https://expense-tracker-web-1ge1.onrender.com](https://expense-tracker-web-1ge1.onrender.com)
