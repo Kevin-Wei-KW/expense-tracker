@@ -3,12 +3,14 @@ import './HomePage.css';
 
 export default function Page(props) {
     const [showPrivacy, setShowPrivacy] = useState(false)
+    const [showPurpose, setShowPurpose] = useState(false)
 
     useEffect(() => {window.scrollTo(0, 0);})
 
     return(
         <div className="HomePage">
-            
+            <img src="public/expense-tracker.png" alt="logo" style={{width: "100px", height: "100px"}}/>
+            <h1>ExpenseLink</h1>
             <div className="home-login">
                 <button className="home-login-btn" onClick={()=>props.setHome(false)}>
                     Connect Now!
@@ -16,7 +18,24 @@ export default function Page(props) {
             </div>
             <h2>Start Tracking Your Expenses in Just a Few Taps!</h2>
 
-            <p style={{fontSize: "12px", paddingTop: "20px"}} onClick={()=>setShowPrivacy(true)}>Privacy Policy</p>
+            <p style={{fontSize: "12px"}} onClick={()=>setShowPurpose(true)}>What is this?</p>
+            <p style={{fontSize: "12px"}} onClick={()=>setShowPrivacy(true)}>Privacy Policy</p>
+
+            {showPurpose &&
+            <div className="purpose" onClick={() => setShowPurpose(false)}>
+                <h2>What is this?</h2>
+                <p>ExpenseLink is a tool that allows you to track your expenses by linking to a Google Sheet.</p>
+                <p>Think of it as a companion app to your Google Sheet, allowing you to track expenses on the go.</p><br/>
+                <p>Simply connect your Google account, select a Google Sheet and Worksheet, and start tracking your expenses!</p>
+                <p>ExpenseLink will automatically template your selected worksheet with the necessary headers and format.</p><br/>
+                <p>ExpenseLink is a free tool that does not store any of your personal information.</p>
+
+                <p style={{fontWeight: "600"}}>
+                    Visit <a href="https://github.com/Kevin-Wei-KW/expense-tracker"><u>https://github.com/Kevin-Wei-KW/expense-tracker</u></a> for more information.
+                </p>
+
+            </div>
+            }
 
             {showPrivacy &&
             <div className="privacy" onClick={() => setShowPrivacy(false)}>
