@@ -9,7 +9,7 @@ export default function Page(props) {
 
     return(
         <div className="HomePage">
-            <img src="public/expense-tracker.png" alt="logo" style={{width: "100px", height: "100px"}}/>
+            <img src="expense-tracker.png" alt="logo" style={{width: "100px", height: "100px"}}/>
             <h1>ExpenseLink</h1>
             <div className="home-login">
                 <button className="home-login-btn" onClick={()=>props.setHome(false)}>
