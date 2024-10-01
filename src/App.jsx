@@ -340,7 +340,7 @@ export default function App() {
       console.log("error");
     },
     flow: 'auth-code',
-    scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file"
+    scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://spreadsheets.google.com/feeds"
   })
 
   function logError(error) {
