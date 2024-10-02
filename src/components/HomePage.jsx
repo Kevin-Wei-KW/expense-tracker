@@ -19,7 +19,7 @@ export default function Page(props) {
             <h2>Start Tracking Your Expenses in Just a Few Taps!</h2>
 
             <p style={{fontSize: "12px"}} onClick={()=>setShowPurpose(true)}>What is this?</p>
-            {/* <p style={{fontSize: "12px"}} onClick={()=>setShowPrivacy(true)}>Privacy Policy</p> */}
+            <p style={{fontSize: "12px"}} onClick={()=>setShowPrivacy(true)}>Privacy Policy</p>
 
             {showPurpose &&
             <div className="purpose" onClick={() => setShowPurpose(false)}>
