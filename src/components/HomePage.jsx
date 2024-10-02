@@ -7,6 +7,10 @@ export default function Page(props) {
 
     useEffect(() => {window.scrollTo(0, 0);})
 
+    const handleRedirect = (url) => {
+        window.open(url, "_blank")
+    }
+
     return(
         <div className="HomePage">
             <img src="expense-tracker.png" alt="logo" style={{width: "100px", height: "100px"}}/>
@@ -19,7 +23,8 @@ export default function Page(props) {
             <h2>Start Tracking Your Expenses in Just a Few Taps!</h2>
 
             <p style={{fontSize: "12px"}} onClick={()=>setShowPurpose(true)}>What is this?</p>
-            <p style={{fontSize: "12px"}} onClick={()=>setShowPrivacy(true)}>Privacy Policy</p>
+
+            <p style={{fontSize: "12px"}} onClick={()=>handleRedirect("https://www.expenselink.app/privacy")}>Privacy Policy</p>
 
             {showPurpose &&
             <div className="purpose" onClick={() => setShowPurpose(false)}>
