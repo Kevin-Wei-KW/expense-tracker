@@ -59,17 +59,31 @@ export default function Page(props) {
                 <span style={{display:"inline-block"}}>
                     <b>Do not edit headers once templated (style changes are okay).</b>
                 </span>
-                
+                <br/>
+                <br/>
+                <h2>Using as an App on Mobile Homescreen</h2>
+                <h3><u>Step 1</u>:</h3>
+                <span style={{display:"inline-block"}}>
+                    Click the "Share" button on your phone browser. <img src="public/share-btn.png" alt="drawing" width="16"/>
+                </span>
+                <br/>
+                <h3><u>Step 2</u>:</h3>
+                <span style={{display:"inline-block"}}>
+                    Click "Add to Home Screen", then "Add".
+                </span>
+                <br/>
+                <h3><u>Step 3</u>:</h3>
+                <span style={{display:"inline-block"}}>
+                    Done! You should be able to access the app from your homescreen!
+                </span>
                 <h3 style={{marginTop: "5vh"}}>Disclaimer:</h3>
                 <span style={{display:"inline-block"}}>
                     This web application will gain access to read/write on your Google Sheets. However, only your selected spreadsheet will be accessed.
                 </span>
                 <br/>
-                <br/>
                 <span style={{display:"inline-block"}}>
                     No information is transfered and stored elsewhere.
                 </span>
-
                 
             </div>
             }
