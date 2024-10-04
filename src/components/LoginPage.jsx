@@ -64,7 +64,7 @@ export default function Page(props) {
                 <h2>Using as an App on Mobile Homescreen</h2>
                 <h3><u>Step 1</u>:</h3>
                 <span style={{display:"inline-block"}}>
-                    Click the "Share" button on your phone browser. <img src="public/share-btn.png" alt="drawing" width="16"/>
+                    Click the "Share" button on your phone browser. <img src="/share-btn.png" alt="(arrow pointing out of box)" width="16"/>
                 </span>
                 <br/>
                 <h3><u>Step 2</u>:</h3>
