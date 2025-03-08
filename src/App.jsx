@@ -26,7 +26,7 @@ export default function App() {
   const [refreshJwt, setRefreshJwt] = useState()
   const [cookies, setCookie, removeCookie] = useCookies();
 
-  function getTxns() {
+  function getTxns(limit = 0) {
     setLoadingTxns(true)
     axios.get(
       API_URL+"/txns",
@@ -35,6 +35,7 @@ export default function App() {
         worksheetTitle: worksheetTitle,
         accessJwt: accessJwt,
         refreshJwt: refreshJwt,
+        limit: limit
       }
       },
     )
@@ -62,7 +63,7 @@ export default function App() {
     })
   }
 
-  function pushTxns(data) {
+  function pushTxns(data, limit=20) {
     setLoadingTxns(true)
     axios.post(
       API_URL+"/txns", {
@@ -72,7 +73,8 @@ export default function App() {
           sheetLink: sheetLink,
           worksheetTitle: worksheetTitle,
           accessJwt: accessJwt,
-          refreshJwt: refreshJwt
+          refreshJwt: refreshJwt,
+          limit: limit
         }
       }
     )
@@ -94,7 +96,7 @@ export default function App() {
     .catch((error) => logError(error))
   }
 
-  function editTxns(row, data) {
+  function editTxns(row, data, limit=20) {
     setLoadingTxns(true)
     axios.put(
       API_URL+"/txns", {
@@ -105,7 +107,8 @@ export default function App() {
         sheetLink: sheetLink,
         worksheetTitle: worksheetTitle,
         accessJwt: accessJwt,
-        refreshJwt: refreshJwt
+        refreshJwt: refreshJwt,
+        limit: limit
         }
       }
     )
@@ -127,7 +130,7 @@ export default function App() {
     .catch((error) => logError(error))
   }
   
-  function deleteTxns(row) {
+  function deleteTxns(row, limit=20) {
     setLoadingTxns(true)
     axios.delete(
       API_URL+"/txns",
@@ -138,7 +141,8 @@ export default function App() {
         sheetLink: sheetLink,
         worksheetTitle: worksheetTitle,
         accessJwt: accessJwt,
-        refreshJwt: refreshJwt
+        refreshJwt: refreshJwt,
+        limit: limit
         }
       }
     )
@@ -312,7 +316,7 @@ export default function App() {
     }
     if (refresh && refresh != refreshJwt) {
       setRefreshJwt(refresh)
-      setCookie('refreshToken', refresh, { path: '/', maxAge: 2592000, secure: true, sameSite: 'strict' }); // refresh token expires in 30 days
+      setCookie('refreshToken', refresh, { path: '/', maxAge: 7776000, secure: true, sameSite: 'strict' }); // refresh token expires in 30 days
     }
   }
 
@@ -322,7 +326,7 @@ export default function App() {
   useEffect(() => {
     // Only call getTxns() if either accessJwt and refreshJwt are defined
     if (accessJwt !== undefined || refreshJwt !== undefined) {
-      getTxns();
+      getTxns(20);
       getStats();
     }
   }, [refreshJwt]); // This effect will re-run whenever refreshJwt change
