@@ -56,7 +56,7 @@ def generate_jwt(value, token_type="access_token"):
     if token_type == "access_token":
         expiration += timedelta(minutes=60)
     else:
-        expiration += timedelta(days=30)
+        expiration += timedelta(days=90)
 
     payload = {
         token_type: value,
@@ -171,6 +171,7 @@ def txns():
     worksheet_title = request.args.get("worksheetTitle")
     access_token = decode_jwt(request.args.get("accessJwt"), "access_token")
     refresh_token = decode_jwt(request.args.get("refreshJwt"), "refresh_token")
+    limit = int(request.args.get("limit"))
 
     error_msg = "Reauthenticate (txn)"
 
@@ -186,11 +187,10 @@ def txns():
         df = c.get_dataframe()
 
         if request.method == "GET":
-
             try:
                 return {
-                    "txns": c.dataframe_to_json_list(df),
-                    "jwts": access_response
+                    "jwts": access_response,
+                    "txns": c.dataframe_to_json_list(df, limit),
                 }
             except:
                 error_msg = "Failed to get transaction"
@@ -201,7 +201,7 @@ def txns():
             new_row = c.create_row(data)
 
             try:
-                new_txns = c.push_to_spreadsheet(new_row, df)
+                new_txns = c.push_to_spreadsheet(new_row, df, limit)
                 return {
                     "txns": new_txns,
                     "jwts": access_response
@@ -216,7 +216,7 @@ def txns():
             new_row = c.create_row(data)
 
             try:
-                new_txns = c.change_transaction(row_num, new_row, df)
+                new_txns = c.change_transaction(row_num, new_row, df, limit)
                 return {
                     "txns": new_txns,
                     "jwts": access_response
@@ -229,7 +229,7 @@ def txns():
             row_num = request.json.get("rowNum")
 
             try:
-                new_txns = c.delete_transaction(row_num, df)
+                new_txns = c.delete_transaction(row_num, df, limit)
                 return {
                     "txns": new_txns,
                     "jwts": access_response

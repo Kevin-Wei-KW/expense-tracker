@@ -131,14 +131,21 @@ def is_float(num: int) -> bool:
         return False
 
 
-def dataframe_to_json_list(df: pd.DataFrame) -> list[txn_dict_format]:
+def dataframe_to_json_list(df: pd.DataFrame, limit=0) -> list[txn_dict_format]:
     """
     Converts dataframe to a list of json
-    :param df:
+    :param df: the dataframe
+    :param limit: the limit for how many items, 0 means all
     :return: list of transaction in dict format
     """
     dict_list = []
-    for i, row in df.iterrows():
+    total_elements = -1
+    for i, row in df.iloc[::-1].iterrows():
+        if total_elements == -1:
+            total_elements = int(i)
+        if limit != 0 and total_elements-int(i) > limit:
+            break
+
         new_dict = {
             "date": row["Date"],
             "txn": row["Transaction"],
@@ -146,7 +153,7 @@ def dataframe_to_json_list(df: pd.DataFrame) -> list[txn_dict_format]:
             "dr": str(row["Dr"]).replace(",", ""),
             "cr": str(row["Cr"]).replace(",", ""),
         }
-        dict_list.insert(0, new_dict)
+        dict_list.append(new_dict)
     return dict_list
 
 #
@@ -164,11 +171,12 @@ def create_row(data: txn_dict_format) -> list:
     return [date, data["txn"], data["desc"], data["dr"], data["cr"]]
 
 
-def push_to_spreadsheet(row: list, df: pd.DataFrame):
+def push_to_spreadsheet(row: list, df: pd.DataFrame, limit=0):
     """
     Add row to dataframe, push to spreadsheet
     :param row: the row to be added to dataframe
     :param df: the dataframe
+    :param limit: the limit for how many items, 0 means all
     :return: nothing
     """
 
@@ -185,18 +193,19 @@ def push_to_spreadsheet(row: list, df: pd.DataFrame):
 
     set_with_dataframe(sheet, df)
 
-    return dataframe_to_json_list(df)
+    return dataframe_to_json_list(df, limit)
 
 
 #
 # Put
 #
 
-def delete_transaction(row_num: int, df: pd.DataFrame) -> str:
+def delete_transaction(row_num: int, df: pd.DataFrame, limit=0):
     """
     Delete row number from dataframe
     :param row_num: the row number to delete
     :param df: the dataframe
+    :param limit: the limit for how many items, 0 means all
     :return: Success or Fail
     """
     index = len(df) - row_num
@@ -206,12 +215,12 @@ def delete_transaction(row_num: int, df: pd.DataFrame) -> str:
         df.reset_index(drop=True, inplace=True)
         sheet.clear()
         set_with_dataframe(sheet, df)
-        return dataframe_to_json_list(df)
+        return dataframe_to_json_list(df, limit)
     else:
         raise Exception("Deletion Failed (out of bounds)")
 
 
-def change_transaction(row_num: int, row: list, df: pd.DataFrame):
+def change_transaction(row_num: int, row: list, df: pd.DataFrame, limit=0):
     """
     Replaces an existing transaction based on index
     :param row_num: the row number to replace
@@ -232,7 +241,7 @@ def change_transaction(row_num: int, row: list, df: pd.DataFrame):
                 df = df.sort_values(df.columns[0])  # sort first column (date)
 
             set_with_dataframe(sheet, df)
-            return dataframe_to_json_list(df)
+            return dataframe_to_json_list(df, limit)
         else:
             raise Exception("Change Failed")
     except Exception:

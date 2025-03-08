@@ -51,6 +51,7 @@ export default function Page(props) {
             <TxnList
                 txns={props.txns}
                 loading={props.loadingTxns}
+                getTxns={props.getTxns}
                 editTxn={setEditTxnSelector}
                 hide={pageSelector !== "Txns"}
                 style={{display: "none"}}/>
