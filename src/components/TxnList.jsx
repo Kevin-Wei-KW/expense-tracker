@@ -57,7 +57,7 @@ export default function TxnList(props) {
                         type={t.txn}
                         date={t.date}
                         details={t.desc}
-                        value={t.cr !== 0 ? -t.cr : t.dr}
+                        value={t.cr != 0 ? -t.cr : t.dr}
                         clickAction={() => props.editTxn(
                             {
                                 "date": t.date,
