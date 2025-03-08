@@ -47,7 +47,7 @@ export default function StatEqn(props) {
             <div 
                 className="eqn-value-display"
                 style={{backgroundColor: getValueColor(props.valueDr)}}
-                onClick={() => {navigator.clipboard.writeText(formatNumber(Math.abs(props.value)))}}
+                onClick={() => {navigator.clipboard.writeText(formatNumber(Math.abs(props.valueDr)))}}
             >
                 {processValue(props.valueDr)}
             </div>
@@ -57,7 +57,7 @@ export default function StatEqn(props) {
             <div
                 className="eqn-value-display"
                 style={{backgroundColor: getValueColor(props.valueCr)}}
-                onClick={() => {navigator.clipboard.writeText(formatNumber(Math.abs(props.value)))}}
+                onClick={() => {navigator.clipboard.writeText(formatNumber(Math.abs(props.valueCr)))}}
             >
                 {processValue(props.valueCr)}
             </div>

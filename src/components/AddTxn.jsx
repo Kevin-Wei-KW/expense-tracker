@@ -128,7 +128,7 @@ export default function AddTxn(props) {
                     date={date}
                     details={detail}
                     value={isCr? -amount:amount}
-                    clickFunc={() => {setIsCr(!isCr); setChanged(true)}}
+                    clickAction={() => {setIsCr(!isCr); setChanged(true)}}
                 ></TxnBox>
 
                 <div className="confirm-cancel">

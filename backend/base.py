@@ -81,6 +81,9 @@ def decode_jwt(token_jwt, token_type="access_token"):
 
 @api.route('/login', methods=['GET'])
 def login():
+    """
+    Process login request
+    """
 
     auth_code = request.args.get("code")
 
@@ -96,6 +99,9 @@ def login():
 
 @api.route('/new_access', methods=['GET'])
 def new_access():
+    """
+    Process new access token request
+    """
     sheet_link = request.args.get("sheetLink")
     worksheet_title = request.args.get("worksheetTitle")
     refresh_token = decode_jwt(request.args.get("refreshJwt"), "refresh_token")
@@ -103,6 +109,23 @@ def new_access():
     response = establish_access(sheet_link, worksheet_title, "", refresh_token)
 
     return response
+
+
+@api.route('/overwrite', methods=['PUT'])
+def overwrite():
+    import crud as c
+
+    sheet_link = request.args.get("sheetLink")
+    worksheet_title = request.args.get("worksheetTitle")
+    access_token = decode_jwt(request.args.get("accessJwt"), "access_token")
+    refresh_token = decode_jwt(request.args.get("refreshJwt"), "refresh_token")
+
+    try:
+        response = establish_access(sheet_link, worksheet_title, access_token, refresh_token)
+        c.overwrite_sheet()
+        return "Success"
+    except Exception:
+        raise Exception("Overwrite failed")
 
 
 def establish_access(sheet_link, worksheet_title, access_token, refresh_token):
@@ -153,14 +176,21 @@ def txns():
     error_msg = "Reauthenticate (txn)"
 
     try:
-        response = establish_access(sheet_link, worksheet_title, access_token, refresh_token)
+        access_response = establish_access(sheet_link, worksheet_title, access_token, refresh_token)
+        sheet_response = c.setup_sheet()
+
+        if sheet_response == "Overwrite":
+            return {
+                "txns": "Overwrite",
+                "jwts": access_response
+            }
         df = c.get_dataframe()
 
         if request.method == "GET":
             try:
                 return {
+                    "jwts": access_response,
                     "txns": c.dataframe_to_json_list(df, limit),
-                    "jwts": response
                 }
             except:
                 error_msg = "Failed to get transaction"
@@ -174,7 +204,7 @@ def txns():
                 new_txns = c.push_to_spreadsheet(new_row, df, limit)
                 return {
                     "txns": new_txns,
-                    "jwts": response
+                    "jwts": access_response
                 }
             except Exception:
                 error_msg = "Failed to add new transaction"
@@ -189,7 +219,7 @@ def txns():
                 new_txns = c.change_transaction(row_num, new_row, df, limit)
                 return {
                     "txns": new_txns,
-                    "jwts": response
+                    "jwts": access_response
                 }
             except Exception:
                 error_msg = "Failed to replace transaction"
@@ -202,7 +232,7 @@ def txns():
                 new_txns = c.delete_transaction(row_num, df, limit)
                 return {
                     "txns": new_txns,
-                    "jwts": response
+                    "jwts": access_response
                 }
             except Exception:
                 error_msg = "Failed to delete transaction"
@@ -226,6 +256,8 @@ def stats():
 
     try:
         response = establish_access(sheet_link, worksheet_title, access_token, refresh_token)
+        c.setup_sheet()
+
         if request.method == "GET":
             df = c.get_dataframe()
 
@@ -247,6 +279,9 @@ def stats():
 
 
 def get_new_access_token(refresh_token):
+    """
+    Grant new access token
+    """
 
     data = {
         'grant_type': REFRESH_GRANT,

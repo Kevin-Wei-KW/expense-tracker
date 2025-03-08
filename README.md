@@ -1,7 +1,7 @@
-# Expense Tracker
+# ExpenseLink
 A web application designed for the phone, aiming to make tracking expenses easy and compatible with Google spreadsheets.
 
-The App: [https://expense-tracker-web-1ge1.onrender.com](https://expense-tracker-web-1ge1.onrender.com)
+The App: [expenselink.app](https://www.expenselink.app/)
 <br/>Check out [iOS Setup](#ios-device-setup)
 
 For Login-less Demo: [https://expense-tracker-web-demo.onrender.com](https://expense-tracker-web-demo.onrender.com/)
@@ -21,8 +21,8 @@ For Login-less Demo: [https://expense-tracker-web-demo.onrender.com](https://exp
 
 ***
 ## iOS Device Setup
-1. Go to the browser of your choice (Chrome or Safari is best)
-2. Navigate to [https://expense-tracker-web-1ge1.onrender.com](https://expense-tracker-web-1ge1.onrender.com)
+1. Go to the browser of your choice (Safari is best, Chrome is good)
+2. Navigate to [expenselink.app](https://www.expenselink.app/)
 3. Press the "Share" button <img src="public/share-btn.png" alt="drawing" width="16"/>  
 4. Select the "Add to Home Screen"
 5. Find your App on your Home Screen, and it's all done!
@@ -38,5 +38,3 @@ For Login-less Demo: [https://expense-tracker-web-demo.onrender.com](https://exp
   
 *See requirements.txt for other pip dependencies*
 
-## History
-See [Old Expense Tracker Repo](https://github.com/Kevin-Wei-KW/ExpenseTracker) for detailed development commit history.

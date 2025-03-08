@@ -74,12 +74,15 @@
 
 .cancel {
     background-color: #1A1A1A;
+    color: white !important;
 }
 
 .confirm {
     background-color: #36512B;
+    color: white !important;
 }
 
 .delete {
     background-color: #561E1E;
+    color: white !important;
 }

@@ -1,0 +1,88 @@
+.HomePage {
+    height: 100vh;
+    width: 100vw;
+    max-width: 500px;
+    background-color: black;
+    color: white;
+
+    margin: 0 auto;
+    margin-top: 0;
+    padding-top: 25vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    text-align: center;
+    align-items: center;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.home-login {
+    background-color: black;
+    width: 100%;
+    height: 15vh;
+    /* position: -webkit-sticky; */
+    position: fixed;
+    bottom: 0vh;
+}
+
+.home-login-btn {
+    display: inline-block;
+    height: fit-content;
+    width: 50%;
+    max-width: 400px;
+    background-color: #36512B;
+    color: white !important;
+
+    font-size: 22px;
+    margin: 1vh;
+}
+h2 {
+    width: 60%;
+}
+
+.home-login-btn:hover{
+    outline: 0;
+    color: white;
+}
+
+.privacy {
+    position: absolute;
+    top:0;
+    height: 100%;
+    width: 90%;
+
+    background-color: black;
+    opacity: 88%;
+
+    /* padding-left: 10vw; */
+    /* text-indent: 7vw; */
+    text-align: left;
+
+    z-index: 100;
+    overflow-y: auto;
+
+}
+
+.purpose {
+    position: absolute;
+    top:0;
+    height: 100%;
+    width: 90%;
+
+    background-color: black;
+    opacity: 88%;
+
+    /* padding-left: 10vw; */
+    /* text-indent: 7vw; */
+    text-align: left;
+
+    z-index: 100;
+    overflow-y: auto;
+
+}

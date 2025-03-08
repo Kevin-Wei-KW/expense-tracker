@@ -8,7 +8,7 @@ import Stats from "./Stats.jsx"
 import AddTxn from "./AddTxn.jsx"
 
 export default function Page(props) {
-    const [pageSelector, setPageSelector] = useState("Home");
+    const [pageSelector, setPageSelector] = useState("Txns");
     const [editingTxn, setEditingTxn] = useState();
 
     function setEditTxnSelector(data) {
@@ -25,7 +25,7 @@ export default function Page(props) {
         window.scrollTo(0, 0);
         if (pageSelector === "AddTxn") {
             return <AddTxn
-                    returnHome={()=>setPageSelector("Home")}
+                    returnHome={()=>setPageSelector("Txns")}
                     pushTxns={props.pushTxns}
                     editTxns={props.editTxns}
                     deleteTxns={props.deleteTxns}
@@ -42,7 +42,7 @@ export default function Page(props) {
     }
     function showNavBar() {
         if (pageSelector != "AddTxn") {
-            return <NavBar page={pageSelector} setPage={setPageSelector} getTxns={props.getTxns} getStats={props.getStats} logout={props.logout}/>
+            return <NavBar page={pageSelector} setPage={setPageSelector} getTxns={props.getTxns} getStats={props.getStats} logout={props.logout} sheetLink={props.sheetLink}/>
         }
     }
 
@@ -53,7 +53,7 @@ export default function Page(props) {
                 loading={props.loadingTxns}
                 getTxns={props.getTxns}
                 editTxn={setEditTxnSelector}
-                hide={pageSelector !== "Home"}
+                hide={pageSelector !== "Txns"}
                 style={{display: "none"}}/>
             {showPageContent()}
             {showAddTxnBtn()}
